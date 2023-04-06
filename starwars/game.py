@@ -1,6 +1,6 @@
 import pygame as pg
 from starwars import ALTO, ANCHO
-
+from starwars.escenas import Portada, Tutorial, Nivel_Facil, Nivel_Dificil, Records
 
 class Starwars:
 
@@ -8,14 +8,17 @@ class Starwars:
         pg.init()
         self.pantalla = pg.display.set_mode((ANCHO, ALTO))
 
+        self.escenas = [
+            Portada(self.pantalla),
+            Tutorial(self.pantalla),
+            Nivel_Facil(self.pantalla),
+            Nivel_Dificil(self.pantalla),
+            Records(self.pantalla)
+
+            ]
+
+
     def jugar (self):
         "Bucle principal"
-        salir = False
-        while not salir:
-            for event in pg.event.get():
-                if event.type == pg.QUIT:
-                    salir = True
-
-            self.pantalla.fill((100, 0 ,0))
-            pg.display.flip()
-            
+        for escena in self.escenas:
+            escena.bucle_principal()
