@@ -1,3 +1,4 @@
+import os
 import pygame as pg
 from starwars import ALTO, ANCHO
 from starwars.escenas import Portada, Tutorial, Nivel_Facil, Nivel_Dificil, Records
@@ -7,6 +8,11 @@ class Starwars:
     def __init__(self):
         pg.init()
         self.pantalla = pg.display.set_mode((ANCHO, ALTO))
+        pg.display.set_caption("Star Wars")
+
+        ruta = os.path.join("resources", "images", "icono.png")
+        icon = pg.image.load(ruta)
+        pg.display.set_icon(icon)
 
         self.escenas = [
             Portada(self.pantalla),
