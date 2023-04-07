@@ -1,7 +1,7 @@
 import os
 import pygame as pg
-from starwars import ALTO, ANCHO
-from starwars.escenas import Portada, Tutorial, Nivel_Facil, Nivel_Dificil, Records
+from . import ALTO, ANCHO
+from .escenas import Portada, Tutorial, Nivel_Facil, Nivel_Dificil, Records
 
 class Starwars:
 

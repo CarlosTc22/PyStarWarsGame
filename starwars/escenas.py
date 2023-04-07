@@ -1,5 +1,6 @@
+import os
 import pygame as pg
-
+from . import ALTO, ANCHO
 
 class Escena:
     def __init__(self, pantalla):
@@ -9,6 +10,12 @@ class Escena:
         pass
 
 class Portada(Escena):
+    def __init__(self, pantalla):
+        super().__init__(pantalla)
+        ruta = os.path.join("resources", "images", "Portada.jpg")
+        self.portada = pg.image.load(ruta)
+
+
     def bucle_principal(self):
         super().bucle_principal()
         salir = False
@@ -16,9 +23,12 @@ class Portada(Escena):
             for event in pg.event.get():
                 if event.type == pg.QUIT:
                     salir = True
-
-            self.pantalla.fill((100, 0 ,0))
+            self.pintar_portada()
             pg.display.flip()
+
+    def pintar_portada(self):
+        self.pantalla.blit(self.portada, (0, 0))
+
 
 class Tutorial(Escena):
     def bucle_principal(self):
