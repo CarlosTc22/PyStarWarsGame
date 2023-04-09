@@ -1,7 +1,8 @@
 import os
+import random
 import pygame as pg
 from . import ALTO, ANCHO
-from .assets import X_Wing
+from .assets import X_Wing , Ball_Training, Laser
 
 class Escena:
     def __init__(self, pantalla):
@@ -63,8 +64,12 @@ class Tutorial(Escena):
         self.fondo = pg.image.load(ruta)
 
         ruta_font = os.path.join("resources", "fonts", "Starjedi.ttf")
-        self.font = pg.font.Font(ruta_font, 60)
+        self.font = pg.font.Font(ruta_font, 30)
         self.x_wing = X_Wing()
+        self.ball_training = Ball_Training()
+        self.lasers = []  
+        self.laser_timer = pg.USEREVENT + 1  
+        pg.time.set_timer(self.laser_timer, 1000)  
 
     def bucle_principal(self):
         super().bucle_principal()
@@ -73,15 +78,35 @@ class Tutorial(Escena):
             for event in pg.event.get():
                 if event.type == pg.QUIT:
                     salir = True
+                elif event.type == self.laser_timer:  
+                    self.lasers.append(Laser())  
             self.pintar_fondo()
             self.x_wing.update()
+            for laser in self.lasers:  
+                laser.update()
+                self.pantalla.blit(laser.image, laser.rect)
             self.pantalla.blit(self.x_wing.image, self.x_wing.rect)
-
+            self.ball_training.update()
+            self.pantalla.blit(self.ball_training.image, self.ball_training.rect)
+            self.pintar_instrucciones()
             pg.display.flip()
         return False
-    
+
     def pintar_fondo(self):
         self.pantalla.blit(self.fondo, (0, 0))
+
+    def pintar_instrucciones(self):
+        mensaje = "Muevete arriba y abajo para esquivar los disparos"
+        texto = self.font.render(mensaje, True, (255, 255, 255))
+        pos_x = ANCHO/2 - texto.get_width()/2
+        pos_y = ALTO* 3/4 
+        self.pantalla.blit(texto, ( pos_x, pos_y))
+
+        mensaje2 = "Aquí no hacen daño"
+        texto2 = self.font.render(mensaje2, True, (255, 255, 255))
+        pos_x2 = ANCHO/2 - texto2.get_width()/2
+        pos_y2 = ALTO* .80 
+        self.pantalla.blit(texto2, ( pos_x2, pos_y2))
 
 
 class Nivel_Facil(Escena):
