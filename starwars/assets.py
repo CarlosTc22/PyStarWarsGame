@@ -4,10 +4,14 @@ import pygame as pg
 from . import ALTO, ANCHO, MARGEN_NAVE , VELOCIDAD
 
 class X_Wing ():
+
+    # Se crea la nave y se le da movimiento arriba y abajo pulsando esas teclas
+
     def __init__(self):
         super().__init__()
         self.image = pg.image.load(os.path.join("resources", "images", "X_Wing.png"))
         self.rect = self.image.get_rect(midbottom=(MARGEN_NAVE, ALTO/2))
+   
 
     def update(self):
         teclas = pg.key.get_pressed()
@@ -22,6 +26,9 @@ class X_Wing ():
                 self.rect.bottom = ALTO
 
 class Ball_Training():
+
+    # Creo la bola de entrenamiento Jedi que sube y baja por decoración, no tiene otra función
+
     def __init__(self):
         super().__init__()
         self.image = pg.image.load(os.path.join("resources", "images", "ball_training.png"))
@@ -35,6 +42,9 @@ class Ball_Training():
         self.rect.y += self.direction * 1  
 
 class Laser():
+
+    # Se generan disparos laser aleatorios de entrenamiento, estos NO hacen daño
+
     def __init__(self):
         super().__init__()
         self.image = pg.image.load(os.path.join("resources", "images", "laser.png"))

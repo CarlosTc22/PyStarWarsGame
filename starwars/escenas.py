@@ -12,6 +12,9 @@ class Escena:
         pass
 
 class Portada(Escena):
+
+    # Se pone el fondo de la portada y los mensajes de texto
+
     def __init__(self, pantalla):
         super().__init__(pantalla)
         ruta = os.path.join("resources", "images", "Portada_oscura.png")
@@ -37,6 +40,7 @@ class Portada(Escena):
             pg.display.flip()
         return False
 
+
     def pintar_portada(self):
         self.pantalla.blit(self.portada, (0, 0))
 
@@ -58,6 +62,9 @@ class Portada(Escena):
 
 
 class Tutorial(Escena):
+
+    # Escena del tutorial, sin daño.
+
     def __init__(self, pantalla):
         super().__init__(pantalla)
         ruta = os.path.join("resources", "images", "background.jpg")
@@ -67,6 +74,9 @@ class Tutorial(Escena):
         self.font = pg.font.Font(ruta_font, 30)
         self.x_wing = X_Wing()
         self.ball_training = Ball_Training()
+        
+        # Se crea una lista para almacenar los disparos y se define un temporizador
+
         self.lasers = []  
         self.laser_timer = pg.USEREVENT + 1  
         pg.time.set_timer(self.laser_timer, 1000)  
@@ -78,15 +88,19 @@ class Tutorial(Escena):
             for event in pg.event.get():
                 if event.type == pg.QUIT:
                     salir = True
+        # Si se produce el evento de temporizador, se añade un láser a la lista
                 elif event.type == self.laser_timer:  
                     self.lasers.append(Laser())  
             self.pintar_fondo()
             self.x_wing.update()
+        # Se actualiza la posición de los láseres y se pintan
             for laser in self.lasers:  
                 laser.update()
                 self.pantalla.blit(laser.image, laser.rect)
+
             self.pantalla.blit(self.x_wing.image, self.x_wing.rect)
             self.ball_training.update()
+        # Se actualiza la posición de Ball_Training y se pinta
             self.pantalla.blit(self.ball_training.image, self.ball_training.rect)
             self.pintar_instrucciones()
             pg.display.flip()
