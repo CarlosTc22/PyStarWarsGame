@@ -125,8 +125,6 @@ class Tutorial(Escena):
 
 class Nivel_Facil(Escena):
 
-    # Escena del tutorial, sin daño.
-
     def __init__(self, pantalla):
         super().__init__(pantalla)
         ruta = os.path.join("resources", "images", "background.jpg")
@@ -135,10 +133,6 @@ class Nivel_Facil(Escena):
         ruta_font = os.path.join("resources", "fonts", "Starjedi.ttf")
         self.font = pg.font.Font(ruta_font, 30)
         self.x_wing = X_Wing()
-
-        
-        # Se crea una lista para almacenar los disparos y se define un temporizador
-
         self.meteoritos = []  
         self.meteoritos_timer = pg.USEREVENT + 1  
         pg.time.set_timer(self.meteoritos_timer, 1000)  
@@ -150,25 +144,20 @@ class Nivel_Facil(Escena):
             for event in pg.event.get():
                 if event.type == pg.QUIT:
                     salir = True
-        # Si se produce el evento de temporizador, se añade un láser a la lista
                 elif event.type == self.meteoritos_timer:  
                     self.meteoritos.append(Meteorito())  
             self.pintar_fondo()
             self.x_wing.update()
-        # Se actualiza la posición de los láseres y se pintan
+            self.x_wing.detectar_colision(self)
             for meteorito in self.meteoritos:  
                 meteorito.update()
                 self.pantalla.blit(meteorito.image, meteorito.rect)
-
             self.pantalla.blit(self.x_wing.image, self.x_wing.rect)
             pg.display.flip()
         return False
 
     def pintar_fondo(self):
         self.pantalla.blit(self.fondo, (0, 0))
-
-
-
 
 class Nivel_Dificil(Escena):
     def __init__(self, pantalla):

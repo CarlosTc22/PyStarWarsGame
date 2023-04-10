@@ -3,15 +3,13 @@ import random
 import pygame as pg
 from . import ALTO, ANCHO, MARGEN_NAVE , VELOCIDAD
 
-class X_Wing ():
-
-    # Se crea la nave y se le da movimiento arriba y abajo pulsando esas teclas
-
+class X_Wing():
     def __init__(self):
         super().__init__()
         self.image = pg.image.load(os.path.join("resources", "images", "X_Wing.png"))
         self.rect = self.image.get_rect(midbottom=(MARGEN_NAVE, ALTO/2))
-   
+        self.colision_time = 0  # Tiempo de espera después de la colisión
+        self.hay_colision = False  # Indicador de colisión
 
     def update(self):
         teclas = pg.key.get_pressed()
@@ -24,6 +22,15 @@ class X_Wing ():
             self.rect.y += VELOCIDAD
             if self.rect.bottom > ALTO:
                 self.rect.bottom = ALTO
+
+    def detectar_colision(self, nivel_facil):
+        # Verificar si la nave está colisionando con un meteorito
+        for meteorito in nivel_facil.meteoritos:
+            if self.rect.colliderect(meteorito.rect):
+                self.hay_colision = True
+                self.colision_time = pg.time.get_ticks()  # Obtener el tiempo actual en milisegundos
+                nivel_facil.meteoritos.remove(meteorito)
+                break
 
 class Ball_Training():
 
@@ -55,12 +62,20 @@ class Laser():
     def update(self):
         self.rect.x -= self.velocidad
 
-class Meteorito(pg.sprite.Sprite):
+class Meteorito():
     def __init__(self):
         super().__init__()
         self.width = random.randint(20, 120)
         self.height = random.randint(20, 120)
-        self.image = pg.image.load(os.path.join("resources", "images", "asteroid1.png")).convert_alpha()
+        IMAGENES_METEORITO = [
+        "asteroid1.png",
+        "asteroid2.png",
+        "asteroid3.png",
+        "asteroid4.png"
+        ]
+        # Seleccionar una imagen aleatoria de la lista
+        imagen_aleatoria = random.choice(IMAGENES_METEORITO)
+        self.image = pg.image.load(os.path.join("resources", "images", imagen_aleatoria)).convert_alpha()
         self.image = pg.transform.scale(self.image, (self.width, self.height))
         self.rect = self.image.get_rect(midbottom=(ANCHO - MARGEN_NAVE, random.randint(0, ALTO - self.height)))
         self.velocidad = 2
