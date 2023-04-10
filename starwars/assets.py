@@ -54,3 +54,16 @@ class Laser():
 
     def update(self):
         self.rect.x -= self.velocidad
+
+class Meteorito(pg.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.width = random.randint(20, 120)
+        self.height = random.randint(20, 120)
+        self.image = pg.image.load(os.path.join("resources", "images", "asteroid1.png")).convert_alpha()
+        self.image = pg.transform.scale(self.image, (self.width, self.height))
+        self.rect = self.image.get_rect(midbottom=(ANCHO - MARGEN_NAVE, random.randint(0, ALTO - self.height)))
+        self.velocidad = 2
+
+    def update(self):
+        self.rect.x -= self.velocidad

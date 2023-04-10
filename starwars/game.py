@@ -16,8 +16,10 @@ class Starwars:
 
         self.escenas = [
             Portada(self.pantalla),
-            Tutorial(self.pantalla),
-            "Nivel_Facil(self.pantalla), Nivel_Dificil(self.pantalla), Records(self.pantalla)"
+            #Tutorial(self.pantalla),
+            Nivel_Facil(self.pantalla), 
+            #Nivel_Dificil(self.pantalla), 
+            #Records(self.pantalla)"
 
             ]
 
