@@ -135,7 +135,8 @@ class Nivel_Facil(Escena):
         self.x_wing = X_Wing()
         self.meteoritos = []  
         self.meteoritos_timer = pg.USEREVENT + 1  
-        pg.time.set_timer(self.meteoritos_timer, 1000)  
+        pg.time.set_timer(self.meteoritos_timer, 1000) 
+        self.vidas = 3 
 
     def bucle_principal(self):
         super().bucle_principal()
@@ -149,15 +150,23 @@ class Nivel_Facil(Escena):
             self.pintar_fondo()
             self.x_wing.update()
             self.x_wing.detectar_colision(self)
+            if self.x_wing.hay_colision:
+                self.vidas -= 1  
+                self.x_wing.hay_colision = False  
             for meteorito in self.meteoritos:  
                 meteorito.update()
                 self.pantalla.blit(meteorito.image, meteorito.rect)
             self.pantalla.blit(self.x_wing.image, self.x_wing.rect)
             pg.display.flip()
         return False
+    
+    def mostrar_vidas(self):
+        texto = self.font.render(f" vidas : {self.vidas}", True, (255, 255, 255))
+        self.pantalla.blit(texto, (50, 50))
 
     def pintar_fondo(self):
         self.pantalla.blit(self.fondo, (0, 0))
+        self.mostrar_vidas()
 
 class Nivel_Dificil(Escena):
     def __init__(self, pantalla):
