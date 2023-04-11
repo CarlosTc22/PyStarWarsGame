@@ -12,16 +12,17 @@ class X_Wing():
         self.hay_colision = False  # Indicador de colisión
 
     def update(self):
-        teclas = pg.key.get_pressed()
-        if teclas[pg.K_UP]:
-            self.rect.y -= VELOCIDAD
-            if self.rect.top < 0:
-                self.rect.top = 0
+        if self.rect.y >= 0: # No funciona el movimiento si no está en pantalla
+            teclas = pg.key.get_pressed()
+            if teclas[pg.K_UP]:
+                self.rect.y -= VELOCIDAD
+                if self.rect.top < 0:
+                    self.rect.top = 0
 
-        if teclas[pg.K_DOWN]:
-            self.rect.y += VELOCIDAD
-            if self.rect.bottom > ALTO:
-                self.rect.bottom = ALTO
+            if teclas[pg.K_DOWN]:
+                self.rect.y += VELOCIDAD
+                if self.rect.bottom > ALTO:
+                    self.rect.bottom = ALTO
 
     def detectar_colision(self, nivel_facil):
         # Verificar si la nave está colisionando con un meteorito
