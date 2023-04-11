@@ -1,7 +1,7 @@
 import os
 import pygame as pg
 from . import ALTO, ANCHO
-from .escenas import Portada, Tutorial, Nivel_Facil, Nivel_Dificil, Records
+from .escenas import Portada, Tutorial, Nivel_Facil, Nivel_Dificil, Records, Historia
 
 class Starwars:
 
@@ -14,17 +14,24 @@ class Starwars:
         icon = pg.image.load(ruta)
         pg.display.set_icon(icon)
 
-        self.escenas = [
-            Portada(self.pantalla),
-            #Tutorial(self.pantalla),
-            Nivel_Facil(self.pantalla), 
-            #Nivel_Dificil(self.pantalla), 
-            #Records(self.pantalla)"
+        self.escenas = {
+            "portada": Portada(self.pantalla),
+            "tutorial": Tutorial(self.pantalla),
+            "historia": Historia(self.pantalla),
+            "records": Records(self.pantalla),
+            "nivel_facil": Nivel_Facil(self.pantalla),
+            "nivel_dificil": Nivel_Dificil(self.pantalla),
+        }
+        self.escena_actual = "portada"
 
-            ]
 
-
-    def jugar (self):
+    def jugar(self):
         "Bucle principal"
-        for escena in self.escenas:
-            escena.bucle_principal()
+        while self.escena_actual is not None:
+            resultado = self.escenas[self.escena_actual].bucle_principal()
+            if resultado == "game_over":
+                self.escena_actual = "records"
+            elif resultado == "continue":
+                self.escena_actual = "nivel_dificil"
+            else:
+                self.escena_actual = resultado

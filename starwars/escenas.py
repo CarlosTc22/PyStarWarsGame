@@ -29,11 +29,15 @@ class Portada(Escena):
         while not salir:
             for event in pg.event.get():
                 if event.type == pg.QUIT:
-                    return True
+                    return "salir"
                 if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
-                    salir = True
+                    return "nivel_facil"
                 if event.type == pg.KEYDOWN and event.key == pg.K_t:
-                    return "t"
+                    return "tutorial"
+                if event.type == pg.KEYDOWN and event.key == pg.K_h:
+                    return "historia"
+                if event.type == pg.KEYDOWN and event.key == pg.K_r:
+                    return "records"
             self.pintar_portada()
             self.pintar_texto()
             self.pintar_textotutorial()
@@ -87,7 +91,9 @@ class Tutorial(Escena):
         while not salir:
             for event in pg.event.get():
                 if event.type == pg.QUIT:
-                    salir = True
+                    return "salir"
+                if event.type == pg.KEYDOWN and event.key == pg.K_BACKSPACE:
+                    return "portada"
         # Si se produce el evento de temporizador, se añade un láser a la lista
                 elif event.type == self.laser_timer:  
                     self.lasers.append(Laser())  
@@ -232,3 +238,7 @@ class Records(Escena):
     
     def pintar_fondo(self):
         self.pantalla.blit(self.fondo, (0, 0))
+
+class Historia(Escena):
+    def __init__(self, pantalla):
+        super().__init__(pantalla)
