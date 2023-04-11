@@ -130,7 +130,7 @@ class Tutorial(Escena):
 
 
 class Nivel_Facil(Escena):
-    def __init__(self, pantalla):
+    def __init__(self, pantalla, vidas=3):
         super().__init__(pantalla)
         ruta = os.path.join("resources", "images", "background.jpg")
         self.fondo = pg.image.load(ruta)
@@ -142,11 +142,10 @@ class Nivel_Facil(Escena):
         self.meteoritos = []
         self.meteoritos_timer = pg.USEREVENT + 1
         pg.time.set_timer(self.meteoritos_timer, 500)
-        self.vidas = 3
+        self.vidas = vidas
         self.pausa_meteoritos = False
         self.timer_pausa = pg.USEREVENT + 2
         self.timer_nivel = pg.USEREVENT + 3
-        pg.time.set_timer(self.timer_nivel, 20000)
         self.puntuacion = 0
         self.tiempotranscurrido_timer = 0
         self.start_time = pg.time.get_ticks()
@@ -155,6 +154,13 @@ class Nivel_Facil(Escena):
         super().bucle_principal()
         salir = False
         while not salir:
+            self.tiempotranscurrido_timer = pg.time.get_ticks() - self.start_time
+            tiempo_restante = 20 - (self.tiempotranscurrido_timer // 1000)
+
+            if tiempo_restante <= 0:  
+                self.puntuacion = self.vidas
+                return ("continue")
+
             for event in pg.event.get():
                 if event.type == pg.QUIT:
                     return "salir"
@@ -167,9 +173,6 @@ class Nivel_Facil(Escena):
                     self.x_wing.rect.y = ALTO/2                  
                     self.pausa_meteoritos = False
                     pg.time.set_timer(self.timer_pausa, 0)
-                elif event.type == self.timer_nivel:
-                    self.puntuacion = self.vidas
-                    return ("continue")
                 
             self.tiempotranscurrido_timer = pg.time.get_ticks() - self.start_time
             self.pintar_fondo()
@@ -208,8 +211,9 @@ class Nivel_Facil(Escena):
         self.pantalla.blit(texto, (ANCHO - texto.get_width() - 50, 50))
 
 class Nivel_Dificil(Nivel_Facil):
-    def __init__(self, pantalla):
-        super().__init__(pantalla)
+    def __init__(self, pantalla, vidas=3):  # Agrega el valor por defecto para el argumento "vidas"
+        super().__init__(pantalla, vidas)
+        self.vidas = vidas
         ruta = os.path.join("resources", "images", "background.jpg")
         self.fondo = pg.image.load(ruta)
 
@@ -218,44 +222,14 @@ class Nivel_Dificil(Nivel_Facil):
         self.timer_nivel = pg.USEREVENT + 3
         pg.time.set_timer(self.timer_nivel, 25000)  # Aumentamos el tiempo del nivel a 25 segundos
         self.start_time = pg.time.get_ticks()
-        
+
     def bucle_principal(self):
-        salir = False
-        while not salir:
-            for event in pg.event.get():
-                if event.type == pg.QUIT:
-                    return "salir"
-                elif self.vidas <= 0:
-                    self.puntuacion = self.vidas
-                    return "game_over"
-                elif event.type == self.meteoritos_timer and not self.pausa_meteoritos:
-                    self.meteoritos.append(Meteorito())  # Cambiamos Meteorito por Laser
-                # ... (otros eventos)
-                elif event.type == self.timer_nivel:
-                    return "portada"  # En lugar de "continue", regresamos a la portada
-
-            self.tiempotranscurrido_timer = pg.time.get_ticks() - self.start_time
-            self.pintar_fondo()
-            self.pintar_temporizador()
-            self.x_wing.update()
-            self.x_wing.detectar_colision(self)
-
-            if self.x_wing.hay_colision:
-                self.vidas -= 1
-                self.x_wing.hay_colision = False
-                self.pausa_meteoritos = True
-                self.x_wing.rect.y = -5 * ALTO
-                pg.time.set_timer(self.timer_pausa, 3000)
-
-            for meteorito in self.meteoritos:
-                meteorito.update()
-                self.pantalla.blit(meteorito.image, meteorito.rect)
-
-            self.pantalla.blit(self.x_wing.image, self.x_wing.rect)
-            self.mostrar_vidas()
-            pg.display.flip()
-
-        return False
+        resultado = super().bucle_principal()
+        
+        if resultado == "continue":
+            return "portada"
+        
+        return resultado
 
 class Records(Escena):
     def __init__(self, pantalla):
