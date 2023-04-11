@@ -82,3 +82,4 @@ class Meteorito():
 
     def update(self):
         self.rect.x -= self.velocidad
+

@@ -151,6 +151,7 @@ class Nivel_Facil(Escena):
                     self.meteoritos.append(Meteorito())
                 elif event.type == self.timer_pausa:
                     self.pausa_meteoritos = False
+                    self.x_wing.rect.y = ALTO/2
 
             self.pintar_fondo()
             self.x_wing.update()
@@ -159,6 +160,7 @@ class Nivel_Facil(Escena):
                 self.vidas -= 1
                 self.x_wing.hay_colision = False
                 self.pausa_meteoritos = True
+                self.x_wing.rect.y = -5 * ALTO
                 pg.time.set_timer(self.timer_pausa, 3000)
 
             for meteorito in self.meteoritos:
