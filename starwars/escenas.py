@@ -139,7 +139,7 @@ class Nivel_Facil(Escena):
         self.vidas = 3
         self.pausa_meteoritos = False
         self.timer_pausa = pg.USEREVENT + 2
-        self.esconder_xwing = pg.USEREVENT + 3
+
 
     def bucle_principal(self):
         super().bucle_principal()
@@ -156,6 +156,7 @@ class Nivel_Facil(Escena):
                 elif event.type == self.timer_pausa:
                     self.x_wing.rect.y = ALTO/2                  
                     self.pausa_meteoritos = False
+                    pg.time.set_timer(self.timer_pausa, 0)  
 
             self.pintar_fondo()
             self.x_wing.update()
@@ -167,7 +168,7 @@ class Nivel_Facil(Escena):
                 self.pausa_meteoritos = True
                 self.x_wing.rect.y = -5 * ALTO
                 pg.time.set_timer(self.timer_pausa, 3000)
-                pg.time.set_timer(self.esconder_xwing, 3000)
+
 
             for meteorito in self.meteoritos:
                 meteorito.update()
