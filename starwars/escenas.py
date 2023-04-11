@@ -145,7 +145,11 @@ class Nivel_Facil(Escena):
         self.vidas = 3
         self.pausa_meteoritos = False
         self.timer_pausa = pg.USEREVENT + 2
-
+        self.timer_nivel = pg.USEREVENT + 3
+        pg.time.set_timer(self.timer_nivel, 20000)
+        self.puntuacion = 0
+        self.tiempotranscurrido_timer = 0
+        self.start_time = pg.time.get_ticks()
 
     def bucle_principal(self):
         super().bucle_principal()
@@ -153,18 +157,23 @@ class Nivel_Facil(Escena):
         while not salir:
             for event in pg.event.get():
                 if event.type == pg.QUIT:
-                    salir = True
+                    return "salir"
                 elif self.vidas <= 0:
-                    print("F")
-                    return "F"
+                    self.puntuacion = self.vidas
+                    return ("game_over")
                 elif event.type == self.meteoritos_timer and not self.pausa_meteoritos:
                     self.meteoritos.append(Meteorito())
                 elif event.type == self.timer_pausa:
                     self.x_wing.rect.y = ALTO/2                  
                     self.pausa_meteoritos = False
-                    pg.time.set_timer(self.timer_pausa, 0)  
-
+                    pg.time.set_timer(self.timer_pausa, 0)
+                elif event.type == self.timer_nivel:
+                    self.puntuacion = self.vidas
+                    return ("continue")
+                
+            self.tiempotranscurrido_timer = pg.time.get_ticks() - self.start_time
             self.pintar_fondo()
+            self.pintar_temporizador()
             self.x_wing.update()
             self.x_wing.detectar_colision(self)
 
@@ -192,6 +201,11 @@ class Nivel_Facil(Escena):
 
     def pintar_fondo(self):
         self.pantalla.blit(self.fondo, (0, 0))
+
+    def pintar_temporizador(self):
+        tiempo_restante = 20 - (self.tiempotranscurrido_timer // 1000)  
+        texto = self.font.render(f"{tiempo_restante}", True, (255, 255, 255))
+        self.pantalla.blit(texto, (ANCHO - texto.get_width() - 50, 50))
 
 class Nivel_Dificil(Escena):
     def __init__(self, pantalla):
