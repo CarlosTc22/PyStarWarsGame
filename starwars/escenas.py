@@ -207,28 +207,55 @@ class Nivel_Facil(Escena):
         texto = self.font.render(f"{tiempo_restante}", True, (255, 255, 255))
         self.pantalla.blit(texto, (ANCHO - texto.get_width() - 50, 50))
 
-class Nivel_Dificil(Escena):
+class Nivel_Dificil(Nivel_Facil):
     def __init__(self, pantalla):
         super().__init__(pantalla)
         ruta = os.path.join("resources", "images", "background.jpg")
         self.fondo = pg.image.load(ruta)
 
-        ruta_font = os.path.join("resources", "fonts", "Starjedi.ttf")
-        self.font = pg.font.Font(ruta_font, 60)
-
+        self.meteoritos_timer = pg.USEREVENT + 1
+        pg.time.set_timer(self.meteoritos_timer, 400)  # Aumentamos la frecuencia de aparición de los láseres
+        self.timer_nivel = pg.USEREVENT + 3
+        pg.time.set_timer(self.timer_nivel, 25000)  # Aumentamos el tiempo del nivel a 25 segundos
+        self.start_time = pg.time.get_ticks()
+        
     def bucle_principal(self):
-        super().bucle_principal()
         salir = False
         while not salir:
             for event in pg.event.get():
                 if event.type == pg.QUIT:
-                    salir = True
+                    return "salir"
+                elif self.vidas <= 0:
+                    self.puntuacion = self.vidas
+                    return "game_over"
+                elif event.type == self.meteoritos_timer and not self.pausa_meteoritos:
+                    self.meteoritos.append(Meteorito())  # Cambiamos Meteorito por Laser
+                # ... (otros eventos)
+                elif event.type == self.timer_nivel:
+                    return "portada"  # En lugar de "continue", regresamos a la portada
+
+            self.tiempotranscurrido_timer = pg.time.get_ticks() - self.start_time
             self.pintar_fondo()
+            self.pintar_temporizador()
+            self.x_wing.update()
+            self.x_wing.detectar_colision(self)
+
+            if self.x_wing.hay_colision:
+                self.vidas -= 1
+                self.x_wing.hay_colision = False
+                self.pausa_meteoritos = True
+                self.x_wing.rect.y = -5 * ALTO
+                pg.time.set_timer(self.timer_pausa, 3000)
+
+            for meteorito in self.meteoritos:
+                meteorito.update()
+                self.pantalla.blit(meteorito.image, meteorito.rect)
+
+            self.pantalla.blit(self.x_wing.image, self.x_wing.rect)
+            self.mostrar_vidas()
             pg.display.flip()
+
         return False
-    
-    def pintar_fondo(self):
-        self.pantalla.blit(self.fondo, (0, 0))
 
 class Records(Escena):
     def __init__(self, pantalla):
