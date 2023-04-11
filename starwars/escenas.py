@@ -124,7 +124,6 @@ class Tutorial(Escena):
 
 
 class Nivel_Facil(Escena):
-
     def __init__(self, pantalla):
         super().__init__(pantalla)
         ruta = os.path.join("resources", "images", "background.jpg")
@@ -132,11 +131,14 @@ class Nivel_Facil(Escena):
 
         ruta_font = os.path.join("resources", "fonts", "Starjedi.ttf")
         self.font = pg.font.Font(ruta_font, 30)
+
         self.x_wing = X_Wing()
-        self.meteoritos = []  
-        self.meteoritos_timer = pg.USEREVENT + 1  
-        pg.time.set_timer(self.meteoritos_timer, 1000) 
-        self.vidas = 3 
+        self.meteoritos = []
+        self.meteoritos_timer = pg.USEREVENT + 1
+        pg.time.set_timer(self.meteoritos_timer, 500)
+        self.vidas = 3
+        self.pausa_meteoritos = False
+        self.timer_pausa = pg.USEREVENT + 2
 
     def bucle_principal(self):
         super().bucle_principal()
@@ -145,28 +147,36 @@ class Nivel_Facil(Escena):
             for event in pg.event.get():
                 if event.type == pg.QUIT:
                     salir = True
-                elif event.type == self.meteoritos_timer:  
-                    self.meteoritos.append(Meteorito())  
+                elif event.type == self.meteoritos_timer and not self.pausa_meteoritos:
+                    self.meteoritos.append(Meteorito())
+                elif event.type == self.timer_pausa:
+                    self.pausa_meteoritos = False
+
             self.pintar_fondo()
             self.x_wing.update()
             self.x_wing.detectar_colision(self)
             if self.x_wing.hay_colision:
-                self.vidas -= 1  
-                self.x_wing.hay_colision = False  
-            for meteorito in self.meteoritos:  
+                self.vidas -= 1
+                self.x_wing.hay_colision = False
+                self.pausa_meteoritos = True
+                pg.time.set_timer(self.timer_pausa, 3000)
+
+            for meteorito in self.meteoritos:
                 meteorito.update()
                 self.pantalla.blit(meteorito.image, meteorito.rect)
+
             self.pantalla.blit(self.x_wing.image, self.x_wing.rect)
+            self.mostrar_vidas()
             pg.display.flip()
+
         return False
-    
+
     def mostrar_vidas(self):
-        texto = self.font.render(f" vidas : {self.vidas}", True, (255, 255, 255))
+        texto = self.font.render(f"vidas: {self.vidas}", True, (255, 255, 255))
         self.pantalla.blit(texto, (50, 50))
 
     def pintar_fondo(self):
         self.pantalla.blit(self.fondo, (0, 0))
-        self.mostrar_vidas()
 
 class Nivel_Dificil(Escena):
     def __init__(self, pantalla):
