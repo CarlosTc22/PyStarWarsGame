@@ -140,7 +140,7 @@ class Nivel_Facil(Escena):
         self.x_wing = X_Wing()
         self.meteoritos = []
         self.meteoritos_timer = pg.USEREVENT + 1
-        pg.time.set_timer(self.meteoritos_timer, 500)
+        pg.time.set_timer(self.meteoritos_timer, 800)
         self.vidas = vidas
         self.pausa_meteoritos = False
         self.timer_pausa = pg.USEREVENT + 2
@@ -218,7 +218,7 @@ class Nivel_Dificil(Nivel_Facil):
         self.fondo = pg.image.load(ruta)
 
         self.meteoritos_timer = pg.USEREVENT + 1
-        pg.time.set_timer(self.meteoritos_timer, 400)  # Aumentamos la frecuencia de aparición
+        pg.time.set_timer(self.meteoritos_timer, 300)  # Aumentamos la frecuencia de aparición
         self.timer_nivel = pg.USEREVENT + 3
         pg.time.set_timer(self.timer_nivel, 25000)  # Aumentamos el tiempo del nivel a 25 segundos
         self.start_time = pg.time.get_ticks()
