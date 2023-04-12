@@ -148,6 +148,7 @@ class Nivel_Facil(Escena):
         self.puntuacion = 0
         self.tiempotranscurrido_timer = 0
         self.start_time = pg.time.get_ticks()
+        self.duracion_nivel = 20
 
     def bucle_principal(self):
         super().bucle_principal()
@@ -205,7 +206,7 @@ class Nivel_Facil(Escena):
         self.pantalla.blit(self.fondo, (0, 0))
 
     def pintar_temporizador(self):
-        tiempo_restante = 20 - (self.tiempotranscurrido_timer // 1000)  
+        tiempo_restante = self.duracion_nivel - (self.tiempotranscurrido_timer // 1000)  
         texto = self.font.render(f"{tiempo_restante}", True, (255, 255, 255))
         self.pantalla.blit(texto, (ANCHO - texto.get_width() - 50, 50))
 
@@ -221,6 +222,7 @@ class Nivel_Dificil(Nivel_Facil):
         self.timer_nivel = pg.USEREVENT + 3
         pg.time.set_timer(self.timer_nivel, 25000)  # Aumentamos el tiempo del nivel a 25 segundos
         self.start_time = pg.time.get_ticks()
+        self.duracion_nivel = 25
 
     def bucle_principal(self):
         resultado = super().bucle_principal()
