@@ -79,7 +79,7 @@ class Meteorito():
         self.image = pg.image.load(os.path.join("resources", "images", imagen_aleatoria)).convert_alpha()
         self.image = pg.transform.scale(self.image, (self.width, self.height))
         self.rect = self.image.get_rect(midbottom=(ANCHO - MARGEN_NAVE, random.randint(0, ALTO - self.height)))
-        self.velocidad = 2
+        self.velocidad = random.randint(1, 4)
 
     def update(self):
         self.rect.x -= self.velocidad

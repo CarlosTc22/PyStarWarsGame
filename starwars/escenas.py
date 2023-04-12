@@ -128,7 +128,6 @@ class Tutorial(Escena):
         pos_y2 = ALTO* .80 
         self.pantalla.blit(texto2, ( pos_x2, pos_y2))
 
-
 class Nivel_Facil(Escena):
     def __init__(self, pantalla, vidas=3):
         super().__init__(pantalla)
@@ -211,14 +210,14 @@ class Nivel_Facil(Escena):
         self.pantalla.blit(texto, (ANCHO - texto.get_width() - 50, 50))
 
 class Nivel_Dificil(Nivel_Facil):
-    def __init__(self, pantalla, vidas=3):  # Agrega el valor por defecto para el argumento "vidas"
+    def __init__(self, pantalla, vidas=3): 
         super().__init__(pantalla, vidas)
         self.vidas = vidas
         ruta = os.path.join("resources", "images", "background.jpg")
         self.fondo = pg.image.load(ruta)
 
         self.meteoritos_timer = pg.USEREVENT + 1
-        pg.time.set_timer(self.meteoritos_timer, 400)  # Aumentamos la frecuencia de aparición de los láseres
+        pg.time.set_timer(self.meteoritos_timer, 400)  # Aumentamos la frecuencia de aparición
         self.timer_nivel = pg.USEREVENT + 3
         pg.time.set_timer(self.timer_nivel, 25000)  # Aumentamos el tiempo del nivel a 25 segundos
         self.start_time = pg.time.get_ticks()
