@@ -129,7 +129,7 @@ class Tutorial(Escena):
         self.pantalla.blit(texto2, ( pos_x2, pos_y2))
 
 class Nivel_Facil(Escena):
-    def __init__(self, pantalla, vidas=3):
+    def __init__(self, pantalla, vidas=3, puntuacion = 0):
         super().__init__(pantalla)
         ruta = os.path.join("resources", "images", "background.jpg")
         self.fondo = pg.image.load(ruta)
@@ -145,7 +145,7 @@ class Nivel_Facil(Escena):
         self.pausa_meteoritos = False
         self.timer_pausa = pg.USEREVENT + 2
         self.timer_nivel = pg.USEREVENT + 3
-        self.puntuacion = 0
+        self.puntuacion = puntuacion
         self.tiempotranscurrido_timer = 0
         self.start_time = pg.time.get_ticks()
         self.duracion_nivel = 20
@@ -159,14 +159,12 @@ class Nivel_Facil(Escena):
             tiempo_restante = 20 - (self.tiempotranscurrido_timer // 1000)
 
             if tiempo_restante <= 0:  
-                self.puntuacion = self.vidas
                 return ("continue")
 
             for event in pg.event.get():
                 if event.type == pg.QUIT:
                     return "salir"
                 elif self.vidas <= 0:
-                    self.puntuacion = self.vidas
                     return ("game_over")
                 elif event.type == self.meteoritos_timer and not self.pausa_meteoritos:
                     self.meteoritos.append(Meteorito())
@@ -221,9 +219,10 @@ class Nivel_Facil(Escena):
 
 
 class Nivel_Dificil(Nivel_Facil):
-    def __init__(self, pantalla, vidas=3): 
-        super().__init__(pantalla, vidas)
+    def __init__(self, pantalla, vidas=3, puntuacion = 0): 
+        super().__init__(pantalla, vidas, puntuacion)
         self.vidas = vidas
+        self.puntuacion = puntuacion
         ruta = os.path.join("resources", "images", "background.jpg")
         self.fondo = pg.image.load(ruta)
 

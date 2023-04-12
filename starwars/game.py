@@ -28,14 +28,16 @@ class Starwars:
     def jugar(self):
         "Bucle principal"
         vidas_restantes = 3 
+        puntuacion_obtenida = 0
 
         while self.escena_actual is not None:
             resultado = self.escenas[self.escena_actual].bucle_principal()
             if resultado == "game_over":
                 self.escena_actual = "records"
             elif resultado == "continue":
-                vidas_restantes = self.escenas["nivel_facil"].vidas  
-                self.escenas["nivel_dificil"] = Nivel_Dificil(self.pantalla, vidas_restantes) 
+                vidas_restantes = self.escenas["nivel_facil"].vidas 
+                puntuacion_obtenida = self.escenas["nivel_facil"].puntuacion 
+                self.escenas["nivel_dificil"] = Nivel_Dificil(self.pantalla, vidas_restantes, puntuacion_obtenida) 
                 self.escena_actual = "nivel_dificil"
             else:
                 self.escena_actual = resultado
