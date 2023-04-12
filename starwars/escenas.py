@@ -149,6 +149,7 @@ class Nivel_Facil(Escena):
         self.tiempotranscurrido_timer = 0
         self.start_time = pg.time.get_ticks()
         self.duracion_nivel = 20
+        self.cruzado_eje_x = False
 
     def bucle_principal(self):
         super().bucle_principal()
@@ -191,9 +192,13 @@ class Nivel_Facil(Escena):
             for meteorito in self.meteoritos:
                 meteorito.update()
                 self.pantalla.blit(meteorito.image, meteorito.rect)
+                if meteorito.rect.x <= 0 and not meteorito.cruzado_eje_x:
+                    self.puntuacion += 10
+                    meteorito.cruzado_eje_x = True
 
             self.pantalla.blit(self.x_wing.image, self.x_wing.rect)
             self.mostrar_vidas()
+            self.mostrar_puntuacion()
             pg.display.flip()
 
         return False
@@ -209,6 +214,11 @@ class Nivel_Facil(Escena):
         tiempo_restante = self.duracion_nivel - (self.tiempotranscurrido_timer // 1000)  
         texto = self.font.render(f"{tiempo_restante}", True, (255, 255, 255))
         self.pantalla.blit(texto, (ANCHO - texto.get_width() - 50, 50))
+    
+    def mostrar_puntuacion(self):
+        texto = self.font.render(f"puntuación: {self.puntuacion}", True, (255, 255, 255))
+        self.pantalla.blit(texto, (50, 100))
+
 
 class Nivel_Dificil(Nivel_Facil):
     def __init__(self, pantalla, vidas=3): 
