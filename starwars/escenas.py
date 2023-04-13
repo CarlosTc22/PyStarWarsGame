@@ -62,8 +62,6 @@ class Portada(Escena):
         self.pantalla.blit(texto, ( pos_x, pos_y))
 
 
-
-
 class Tutorial(Escena):
 
     # Escena del tutorial, sin daño.
@@ -152,7 +150,10 @@ class Nivel_Facil(Escena):
         self.pausa_final = False
         self.contador_meteoritos = 0
         self.limite_meteoritos = METEORITOS_NIVEL_FACIL
-
+        self.mover_nave_activado = False
+        self.angulo_rotacion = 0  
+        self.mostrar_texto = False
+        
     def bucle_principal(self):
         super().bucle_principal()
         salir = False
@@ -166,6 +167,7 @@ class Nivel_Facil(Escena):
                 self.pausa_final = True
                 pg.time.set_timer(self.espera_timer, 5000)
                 espera_iniciada = True
+                
 
             for event in pg.event.get():
                 if event.type == pg.QUIT:
@@ -183,13 +185,22 @@ class Nivel_Facil(Escena):
                     self.pausa_meteoritos = False
                     pg.time.set_timer(self.timer_pausa, 0)
                 elif event.type == self.espera_timer:
+                    self.mover_nave_activado = True
+                elif event.type == pg.KEYDOWN and event.key == pg.K_s and self.mostrar_texto:
                     print("continue")
-                    return ("continue")
+                    return "continue"
+
+                    
 
             self.tiempotranscurrido_timer = pg.time.get_ticks() - self.start_time
             self.pintar_fondo()
             self.x_wing.update()
             self.x_wing.detectar_colision(self)
+
+            if self.mover_nave_activado:
+                self.mover_nave()
+            if self.mostrar_texto:
+                self.pintar_texto()
 
             if self.x_wing.hay_colision:
                 self.vidas -= 1
@@ -229,6 +240,34 @@ class Nivel_Facil(Escena):
     def mostrar_puntuacion(self):
         texto = self.font.render(f"puntuación: {self.puntuacion}", True, (255, 255, 255))
         self.pantalla.blit(texto, (50, 100))
+
+    def mover_nave(self):
+        destino_x = ANCHO - 480
+        destino_y = ALTO / 2
+
+        distancia_x = destino_x - self.x_wing.rect.x
+        distancia_y = destino_y - self.x_wing.rect.y
+
+        pasos = max(abs(distancia_x), abs(distancia_y))
+
+        velocidad_x = distancia_x / pasos
+        velocidad_y = distancia_y / pasos
+
+        self.x_wing.rect.x += velocidad_x
+        self.x_wing.rect.y += velocidad_y
+
+        if abs(self.x_wing.rect.x - destino_x) < 1 and abs(self.x_wing.rect.y - destino_y) < 1:
+            self.x_wing.image = pg.transform.rotate(self.x_wing.image, 180)
+            self.mover_nave_activado = False
+            pg.time.set_timer(self.espera_timer, 0)
+            self.mostrar_texto = True
+        
+    def pintar_texto(self):
+        mensaje = "Pulsa espacio para continuar"
+        texto = self.font.render(mensaje, True, (255, 255, 255))
+        pos_x = ANCHO/2 - texto.get_width()/2
+        pos_y = ALTO* 3/4 
+        self.pantalla.blit(texto, ( pos_x, pos_y))
 
 class Nivel_Dificil(Nivel_Facil):
     def __init__(self, pantalla, vidas=3, puntuacion = 0): 
