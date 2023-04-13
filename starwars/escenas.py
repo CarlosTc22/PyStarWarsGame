@@ -1,7 +1,7 @@
 import os
 import pygame as pg
 from . import ALTO, ANCHO, METEORITOS_NIVEL_DIFICIL, METEORITOS_NIVEL_FACIL
-from .assets import Ball_Training, Laser, Meteorito, X_Wing 
+from .assets import Ball_Training, Laser, Meteorito, Planeta, X_Wing 
 
 class Escena:
     def __init__(self, pantalla):
@@ -136,7 +136,7 @@ class Nivel_Facil(Escena):
 
         self.x_wing = X_Wing()
         self.meteoritos = []
-        self.duracion_nivel = 20
+        self.duracion_nivel = 2
         self.vidas = vidas
         self.pausa_meteoritos = False
         self.timer_pausa = pg.USEREVENT + 1
@@ -153,6 +153,7 @@ class Nivel_Facil(Escena):
         self.mover_nave_activado = False
         self.angulo_rotacion = 0  
         self.mostrar_texto = False
+        self.planeta = Planeta()
         
     def bucle_principal(self):
         super().bucle_principal()
@@ -186,7 +187,7 @@ class Nivel_Facil(Escena):
                     pg.time.set_timer(self.timer_pausa, 0)
                 elif event.type == self.espera_timer:
                     self.mover_nave_activado = True
-                elif event.type == pg.KEYDOWN and event.key == pg.K_s and self.mostrar_texto:
+                elif event.type == pg.KEYDOWN and event.key == pg.K_SPACE and self.mostrar_texto:
                     print("continue")
                     return "continue"
 
@@ -199,6 +200,7 @@ class Nivel_Facil(Escena):
 
             if self.mover_nave_activado:
                 self.mover_nave()
+                self.planeta.update()
             if self.mostrar_texto:
                 self.pintar_texto()
 
@@ -215,7 +217,7 @@ class Nivel_Facil(Escena):
                 if meteorito.rect.x <= 0 and not meteorito.cruzado_eje_x:
                     self.puntuacion += 10
                     meteorito.cruzado_eje_x = True
-
+            self.pantalla.blit(self.planeta.image, self.planeta.rect)
             self.pantalla.blit(self.x_wing.image, self.x_wing.rect)
             if self.mostrar_marcadores:
                 self.mostrar_vidas()
@@ -242,7 +244,7 @@ class Nivel_Facil(Escena):
         self.pantalla.blit(texto, (50, 100))
 
     def mover_nave(self):
-        destino_x = ANCHO - 480
+        destino_x = ANCHO - 600
         destino_y = ALTO / 2
 
         distancia_x = destino_x - self.x_wing.rect.x

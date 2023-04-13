@@ -81,3 +81,18 @@ class Meteorito():
     def update(self):
         self.rect.x -= self.velocidad
 
+
+class Planeta():
+    def __init__(self):
+        self.image = pg.image.load(os.path.join("resources", "images", "planeta.png"))
+        self.rect = self.image.get_rect(midbottom=(MARGEN_NAVE, ALTO/2))
+        self.image = pg.transform.scale(self.image, (920, 920))
+        self.rect = self.image.get_rect()
+        self.rect.x = ANCHO
+        self.rect.centery = ALTO / 2
+        self.velocidad = 1
+
+    def update(self):
+        self.rect.x -= self.velocidad
+        if self.rect.x <= ANCHO - 480:
+            self.rect.x = ANCHO - 480
