@@ -140,6 +140,7 @@ class Nivel_Facil(Escena):
         self.x_wing = X_Wing()
         self.meteoritos = []
         self.meteoritos_timer = pg.USEREVENT + 1
+        self.duracion_nivel = 5
         pg.time.set_timer(self.meteoritos_timer, 20000)
         self.vidas = vidas
         self.pausa_meteoritos = False
@@ -148,7 +149,6 @@ class Nivel_Facil(Escena):
         self.puntuacion = puntuacion
         self.tiempotranscurrido_timer = 0
         self.start_time = pg.time.get_ticks()
-        self.duracion_nivel = 20
         self.cruzado_eje_x = False
         self.mostrar_marcadores = True
         self.espera_timer = pg.USEREVENT + 4
@@ -161,7 +161,7 @@ class Nivel_Facil(Escena):
         espera_iniciada = False
         while not salir:
             self.tiempotranscurrido_timer = pg.time.get_ticks() - self.start_time
-            tiempo_restante = 20 - (self.tiempotranscurrido_timer // 1000)
+            tiempo_restante = self.duracion_nivel - (self.tiempotranscurrido_timer // 1000)
 
             if tiempo_restante <= 0 and not espera_iniciada:
                 self.mostrar_marcadores = False
@@ -233,22 +233,17 @@ class Nivel_Facil(Escena):
 class Nivel_Dificil(Nivel_Facil):
     def __init__(self, pantalla, vidas=3, puntuacion = 0): 
         super().__init__(pantalla, vidas, puntuacion)
-        self.vidas = vidas
-        self.puntuacion = puntuacion
         ruta = os.path.join("resources", "images", "background.jpg")
         self.fondo = pg.image.load(ruta)
-
-        self.meteoritos_timer = pg.USEREVENT + 1
         pg.time.set_timer(self.meteoritos_timer, 300)  # Aumentamos la frecuencia de aparición
-        self.timer_nivel = pg.USEREVENT + 3
-        pg.time.set_timer(self.timer_nivel, 25000)  # Aumentamos el tiempo del nivel a 25 segundos
-        self.start_time = pg.time.get_ticks()
         self.duracion_nivel = 25
+        self.espera_timer = pg.USEREVENT + 5
 
     def bucle_principal(self):
         resultado = super().bucle_principal()
         
         if resultado == "continue":
+            print ("fallo")
             return "portada"
         
         return resultado
