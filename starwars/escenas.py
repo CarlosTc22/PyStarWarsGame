@@ -129,7 +129,7 @@ class Tutorial(Escena):
         self.pantalla.blit(texto2, ( pos_x2, pos_y2))
 
 class Nivel_Facil(Escena):
-    def __init__(self, pantalla, vidas=3, puntuacion = 0):
+    def __init__(self, pantalla, vidas=3, puntuacion=0):
         super().__init__(pantalla)
         ruta = os.path.join("resources", "images", "background.jpg")
         self.fondo = pg.image.load(ruta)
@@ -140,7 +140,7 @@ class Nivel_Facil(Escena):
         self.x_wing = X_Wing()
         self.meteoritos = []
         self.meteoritos_timer = pg.USEREVENT + 1
-        pg.time.set_timer(self.meteoritos_timer, 800)
+        pg.time.set_timer(self.meteoritos_timer, 20000)
         self.vidas = vidas
         self.pausa_meteoritos = False
         self.timer_pausa = pg.USEREVENT + 2
@@ -150,32 +150,43 @@ class Nivel_Facil(Escena):
         self.start_time = pg.time.get_ticks()
         self.duracion_nivel = 20
         self.cruzado_eje_x = False
+        self.mostrar_marcadores = True
+        self.espera_timer = pg.USEREVENT + 4
+        self.pausa_final = False
+
 
     def bucle_principal(self):
         super().bucle_principal()
         salir = False
+        espera_iniciada = False
         while not salir:
             self.tiempotranscurrido_timer = pg.time.get_ticks() - self.start_time
             tiempo_restante = 20 - (self.tiempotranscurrido_timer // 1000)
 
-            if tiempo_restante <= 0:  
-                return ("continue")
+            if tiempo_restante <= 0 and not espera_iniciada:
+                self.mostrar_marcadores = False
+                self.pausa_final = True
+                pg.time.set_timer(self.espera_timer, 5000)
+                espera_iniciada = True
 
             for event in pg.event.get():
                 if event.type == pg.QUIT:
                     return "salir"
                 elif self.vidas <= 0:
+                    print("game_over")
                     return ("game_over")
-                elif event.type == self.meteoritos_timer and not self.pausa_meteoritos:
+                elif event.type == self.meteoritos_timer and not self.pausa_meteoritos and not self.pausa_final:
                     self.meteoritos.append(Meteorito())
                 elif event.type == self.timer_pausa:
                     self.x_wing.rect.y = ALTO/2                  
                     self.pausa_meteoritos = False
                     pg.time.set_timer(self.timer_pausa, 0)
-                
+                elif event.type == self.espera_timer:
+                    print("continue")
+                    return ("continue")
+
             self.tiempotranscurrido_timer = pg.time.get_ticks() - self.start_time
             self.pintar_fondo()
-            self.pintar_temporizador()
             self.x_wing.update()
             self.x_wing.detectar_colision(self)
 
@@ -184,8 +195,7 @@ class Nivel_Facil(Escena):
                 self.x_wing.hay_colision = False
                 self.pausa_meteoritos = True
                 self.x_wing.rect.y = -5 * ALTO
-                pg.time.set_timer(self.timer_pausa, 3000)
-
+                pg.time.set_timer(self.timer_pausa, 5000)
 
             for meteorito in self.meteoritos:
                 meteorito.update()
@@ -195,8 +205,10 @@ class Nivel_Facil(Escena):
                     meteorito.cruzado_eje_x = True
 
             self.pantalla.blit(self.x_wing.image, self.x_wing.rect)
-            self.mostrar_vidas()
-            self.mostrar_puntuacion()
+            if self.mostrar_marcadores:
+                self.mostrar_vidas()
+                self.mostrar_puntuacion()
+                self.pintar_temporizador()
             pg.display.flip()
 
         return False
