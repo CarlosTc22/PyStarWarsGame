@@ -138,7 +138,7 @@ class Nivel_Facil(Escena):
 
         self.x_wing = X_Wing()
         self.meteoritos = []
-        self.duracion_nivel = 5
+        self.duracion_nivel = 20
         self.vidas = vidas
         self.pausa_meteoritos = False
         self.timer_pausa = pg.USEREVENT + 1
@@ -230,7 +230,6 @@ class Nivel_Facil(Escena):
         texto = self.font.render(f"puntuación: {self.puntuacion}", True, (255, 255, 255))
         self.pantalla.blit(texto, (50, 100))
 
-
 class Nivel_Dificil(Nivel_Facil):
     def __init__(self, pantalla, vidas=3, puntuacion = 0): 
         super().__init__(pantalla, vidas, puntuacion)
@@ -239,6 +238,9 @@ class Nivel_Dificil(Nivel_Facil):
         self.duracion_nivel = 25
         self.espera_timer = pg.USEREVENT + 4
         self.limite_meteoritos = METEORITOS_NIVEL_DIFICIL
+        self.contador_meteoritos = 0
+
+
     def bucle_principal(self):
         resultado = super().bucle_principal()
         

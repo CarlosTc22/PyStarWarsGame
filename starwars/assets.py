@@ -74,7 +74,7 @@ class Meteorito():
         imagen_aleatoria = random.choice(IMAGENES_METEORITO)
         self.image = pg.image.load(os.path.join("resources", "images", imagen_aleatoria)).convert_alpha()
         self.image = pg.transform.scale(self.image, (self.width, self.height))
-        self.rect = self.image.get_rect(midbottom=(ANCHO - MARGEN_NAVE, random.randint(0, ALTO - self.height)))
+        self.rect = self.image.get_rect(midbottom=(ANCHO - MARGEN_NAVE, random.randint(0, ALTO - self.height - 20)))
         self.velocidad = random.randint(1, 4)
         self.cruzado_eje_x = False
         
