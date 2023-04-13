@@ -5,7 +5,6 @@ from . import ALTO, ANCHO, MARGEN_NAVE , VELOCIDAD
 
 class X_Wing():
     def __init__(self):
-        super().__init__()
         self.image = pg.image.load(os.path.join("resources", "images", "X_Wing.png"))
         self.rect = self.image.get_rect(midbottom=(MARGEN_NAVE, ALTO/2))
         self.colision_time = 0  # Tiempo de espera después de la colisión
@@ -38,7 +37,6 @@ class Ball_Training():
     # Creo la bola de entrenamiento Jedi que sube y baja por decoración, no tiene otra función
 
     def __init__(self):
-        super().__init__()
         self.image = pg.image.load(os.path.join("resources", "images", "ball_training.png"))
         self.image = pg.transform.scale(self.image, (self.image.get_width()//2, self.image.get_height()//2))
         self.rect = self.image.get_rect(midbottom=(ANCHO - MARGEN_NAVE, ALTO/2))
@@ -54,7 +52,6 @@ class Laser():
     # Se generan disparos laser aleatorios de entrenamiento, estos NO hacen daño
 
     def __init__(self):
-        super().__init__()
         self.image = pg.image.load(os.path.join("resources", "images", "laser.png"))
         y = random.randint(0, ALTO - self.image.get_height())
         self.rect = self.image.get_rect(midbottom=(ANCHO - MARGEN_NAVE, y))
@@ -65,7 +62,6 @@ class Laser():
 
 class Meteorito():
     def __init__(self):
-        super().__init__()
         self.width = random.randint(20, 120)
         self.height = random.randint(20, 120)
         IMAGENES_METEORITO = [

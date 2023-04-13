@@ -1,7 +1,6 @@
 import os
-import random
 import pygame as pg
-from . import ALTO, ANCHO
+from . import ALTO, ANCHO, METEORITOS_NIVEL_DIFICIL, METEORITOS_NIVEL_FACIL
 from .assets import Ball_Training, Laser, Meteorito, X_Wing 
 
 class Escena:
@@ -139,21 +138,20 @@ class Nivel_Facil(Escena):
 
         self.x_wing = X_Wing()
         self.meteoritos = []
-        self.meteoritos_timer = pg.USEREVENT + 1
         self.duracion_nivel = 5
-        pg.time.set_timer(self.meteoritos_timer, 20000)
         self.vidas = vidas
         self.pausa_meteoritos = False
-        self.timer_pausa = pg.USEREVENT + 2
-        self.timer_nivel = pg.USEREVENT + 3
+        self.timer_pausa = pg.USEREVENT + 1
+        self.timer_nivel = pg.USEREVENT + 2
         self.puntuacion = puntuacion
         self.tiempotranscurrido_timer = 0
         self.start_time = pg.time.get_ticks()
         self.cruzado_eje_x = False
         self.mostrar_marcadores = True
-        self.espera_timer = pg.USEREVENT + 4
+        self.espera_timer = pg.USEREVENT + 3
         self.pausa_final = False
-
+        self.contador_meteoritos = 0
+        self.limite_meteoritos = METEORITOS_NIVEL_FACIL
 
     def bucle_principal(self):
         super().bucle_principal()
@@ -171,12 +169,15 @@ class Nivel_Facil(Escena):
 
             for event in pg.event.get():
                 if event.type == pg.QUIT:
-                    return "salir"
+                    return "salir"  
+                
                 elif self.vidas <= 0:
                     print("game_over")
                     return ("game_over")
-                elif event.type == self.meteoritos_timer and not self.pausa_meteoritos and not self.pausa_final:
-                    self.meteoritos.append(Meteorito())
+                elif not self.pausa_meteoritos and not self.pausa_final:
+                    if self.contador_meteoritos < self.limite_meteoritos:
+                        self.meteoritos.append(Meteorito())
+                        self.contador_meteoritos += 1
                 elif event.type == self.timer_pausa:
                     self.x_wing.rect.y = ALTO/2                  
                     self.pausa_meteoritos = False
@@ -235,10 +236,9 @@ class Nivel_Dificil(Nivel_Facil):
         super().__init__(pantalla, vidas, puntuacion)
         ruta = os.path.join("resources", "images", "background.jpg")
         self.fondo = pg.image.load(ruta)
-        pg.time.set_timer(self.meteoritos_timer, 300)  # Aumentamos la frecuencia de aparición
         self.duracion_nivel = 25
-        self.espera_timer = pg.USEREVENT + 5
-
+        self.espera_timer = pg.USEREVENT + 4
+        self.limite_meteoritos = METEORITOS_NIVEL_DIFICIL
     def bucle_principal(self):
         resultado = super().bucle_principal()
         
