@@ -2,11 +2,16 @@ import os
 import pygame as pg
 from . import ALTO, ANCHO, METEORITOS_NIVEL_DIFICIL, METEORITOS_NIVEL_FACIL
 from .assets import Ball_Training, Laser, Meteorito, Planeta, X_Wing 
-from .records import recuperar_records, agregar_record, actualizar_record
+from .records import recuperar_records, agregar_record
 
 class Escena:
     def __init__(self, pantalla):
         self.pantalla = pantalla
+        ruta = os.path.join("resources", "images", "background.jpg")
+        self.fondo = pg.image.load(ruta)
+
+        ruta_font = os.path.join("resources", "fonts", "Starjedi.ttf")
+        self.font = pg.font.Font(ruta_font, 30)
 
     def bucle_principal(self):
         pass
@@ -129,12 +134,6 @@ class Tutorial(Escena):
 class Nivel_Facil(Escena):
     def __init__(self, pantalla, vidas=3, puntuacion=0):
         super().__init__(pantalla)
-        ruta = os.path.join("resources", "images", "background.jpg")
-        self.fondo = pg.image.load(ruta)
-
-        ruta_font = os.path.join("resources", "fonts", "Starjedi.ttf")
-        self.font = pg.font.Font(ruta_font, 30)
-
         self.x_wing = X_Wing()
         self.meteoritos = []
         self.duracion_nivel = 20
@@ -144,7 +143,6 @@ class Nivel_Facil(Escena):
         self.timer_nivel = pg.USEREVENT + 2
         self.puntuacion = puntuacion
         self.tiempotranscurrido_timer = 0
-        self.start_time = pg.time.get_ticks()
         self.cruzado_eje_x = False
         self.mostrar_marcadores = True
         self.espera_timer = pg.USEREVENT + 3
@@ -152,7 +150,6 @@ class Nivel_Facil(Escena):
         self.contador_meteoritos = 0
         self.limite_meteoritos = METEORITOS_NIVEL_FACIL
         self.mover_nave_activado = False
-        self.angulo_rotacion = 0  
         self.mostrar_texto = False
         self.planeta = Planeta()
         self.angulo = 0
@@ -160,6 +157,7 @@ class Nivel_Facil(Escena):
         self.fin_rotacion = False
         
     def bucle_principal(self):
+        self.start_time = pg.time.get_ticks()
         super().bucle_principal()
         salir = False
         espera_iniciada = False
@@ -325,8 +323,6 @@ class Nivel_Facil(Escena):
 class Nivel_Dificil(Nivel_Facil):
     def __init__(self, pantalla, vidas=3, puntuacion = 0): 
         super().__init__(pantalla, vidas, puntuacion)
-        ruta = os.path.join("resources", "images", "background.jpg")
-        self.fondo = pg.image.load(ruta)
         self.duracion_nivel = 25
         self.espera_timer = pg.USEREVENT + 4
         self.limite_meteoritos = METEORITOS_NIVEL_DIFICIL
@@ -345,7 +341,6 @@ class Nivel_Dificil(Nivel_Facil):
 class Records(Nivel_Facil):
     def __init__(self, pantalla, vidas=3, puntuacion=0):
         super().__init__(pantalla, vidas, puntuacion)
-
         self.records = recuperar_records()
 
     def pintar_records(self):
