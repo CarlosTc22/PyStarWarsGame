@@ -180,7 +180,9 @@ class Nivel_Facil(Escena):
                 
                 elif self.vidas <= 0:
                     print("game_over")
-                    agregar_record("YOD", self.puntuacion)
+                    iniciales = self.pedir_iniciales()
+                    if iniciales != "salir":
+                        agregar_record(iniciales, self.puntuacion)
                     return ("game_over")
                 elif not self.pausa_meteoritos and not self.pausa_final:
                     if self.contador_meteoritos < self.limite_meteoritos:
@@ -294,6 +296,31 @@ class Nivel_Facil(Escena):
             pos_x = ANCHO/2 - texto.get_width()/2
             pos_y = ALTO* 3/4 
             self.pantalla.blit(texto, ( pos_x, pos_y))
+
+    def pedir_iniciales(self):
+        iniciales = ""
+        salir = False
+
+        while not salir:
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    return "salir"
+                elif event.type == pg.KEYDOWN:
+                    if event.unicode.isalpha() and len(iniciales) < 3:
+                        iniciales += event.unicode.upper()
+                    elif event.key == pg.K_BACKSPACE and len(iniciales) > 0:
+                        iniciales = iniciales[:-1]
+                    elif event.key == pg.K_RETURN and len(iniciales) == 3:
+                        return iniciales
+
+            self.pintar_fondo()
+
+            mensaje = "ingrese sus iniciales: " + iniciales
+            texto = self.font.render(mensaje, True, (255, 255, 255))
+            pos_x = ANCHO / 2 - texto.get_width() / 2
+            pos_y = ALTO / 2 - texto.get_height() / 2
+            self.pantalla.blit(texto, (pos_x, pos_y))
+            pg.display.flip()
 
 class Nivel_Dificil(Nivel_Facil):
     def __init__(self, pantalla, vidas=3, puntuacion = 0): 
