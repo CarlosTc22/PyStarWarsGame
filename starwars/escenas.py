@@ -365,6 +365,9 @@ class Records(Nivel_Facil):
             self.pantalla.blit(texto_nombre, (margen_izquierdo, y))
             self.pantalla.blit(texto_record, (ANCHO // 2 + margen_izquierdo, y))
 
+            if index >= 5:
+                break
+            
     def bucle_principal(self):
         salir = False
         while not salir:
