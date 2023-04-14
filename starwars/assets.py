@@ -6,6 +6,7 @@ from . import ALTO, ANCHO, MARGEN_NAVE , VELOCIDAD
 class X_Wing():
     def __init__(self):
         self.image = pg.image.load(os.path.join("resources", "images", "X_Wing.png"))
+        self.rotated_image = self.image
         self.rect = self.image.get_rect(midbottom=(MARGEN_NAVE, ALTO/2))
         self.colision_time = 0  # Tiempo de espera después de la colisión
         self.hay_colision = False  # Indicador de colisión
@@ -31,6 +32,10 @@ class X_Wing():
                 self.colision_time = pg.time.get_ticks()  # Obtener el tiempo actual en milisegundos
                 nivel_facil.meteoritos.remove(meteorito)
                 break
+    
+    def rotate(self, angle):
+        self.rotated_image = pg.transform.rotate(self.image, angle)
+        self.rect = self.rotated_image.get_rect(center=self.rect.center)
 
 class Ball_Training():
 

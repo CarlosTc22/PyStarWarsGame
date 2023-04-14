@@ -154,6 +154,9 @@ class Nivel_Facil(Escena):
         self.angulo_rotacion = 0  
         self.mostrar_texto = False
         self.planeta = Planeta()
+        self.angulo = 0
+        self.rotacion = False
+        self.fin_rotacion = False
         
     def bucle_principal(self):
         super().bucle_principal()
@@ -201,6 +204,7 @@ class Nivel_Facil(Escena):
             if self.mover_nave_activado:
                 self.mover_nave()
                 self.planeta.update()
+
             if self.mostrar_texto:
                 self.pintar_texto()
 
@@ -218,7 +222,9 @@ class Nivel_Facil(Escena):
                     self.puntuacion += 10
                     meteorito.cruzado_eje_x = True
             self.pantalla.blit(self.planeta.image, self.planeta.rect)
-            self.pantalla.blit(self.x_wing.image, self.x_wing.rect)
+
+            if not self.mostrar_texto:
+                self.pantalla.blit(self.x_wing.image, self.x_wing.rect)
             if self.mostrar_marcadores:
                 self.mostrar_vidas()
                 self.mostrar_puntuacion()
@@ -244,6 +250,7 @@ class Nivel_Facil(Escena):
         self.pantalla.blit(texto, (50, 100))
 
     def mover_nave(self):
+        i = 1
         destino_x = ANCHO - 600
         destino_y = ALTO / 2
 
@@ -252,24 +259,39 @@ class Nivel_Facil(Escena):
 
         pasos = max(abs(distancia_x), abs(distancia_y))
 
-        velocidad_x = distancia_x / pasos
-        velocidad_y = distancia_y / pasos
+        if pasos != 0:
+            velocidad_x = distancia_x / pasos
+            velocidad_y = distancia_y / pasos
+        else:
+            velocidad_x = 0
+            velocidad_y = 0
 
         self.x_wing.rect.x += velocidad_x
         self.x_wing.rect.y += velocidad_y
 
         if abs(self.x_wing.rect.x - destino_x) < 1 and abs(self.x_wing.rect.y - destino_y) < 1:
-            self.x_wing.image = pg.transform.rotate(self.x_wing.image, 180)
-            self.mover_nave_activado = False
-            pg.time.set_timer(self.espera_timer, 0)
+            if self.angulo < 180:
+                self.angulo += 2
+                img_rotada = pg.transform.rotate(self.x_wing.image, self.angulo)
+                rect_rotado = img_rotada.get_rect(center=self.x_wing.rect.center)
+                self.pantalla.blit(img_rotada, rect_rotado)
+            else:
+                self.rotacion = False
+                self.fin_rotacion = True
+                img_rotada2 = pg.transform.rotate(self.x_wing.image, 180)
+                rect_rotado2 = img_rotada2.get_rect(center=self.x_wing.rect.center)
+                self.pantalla.blit(img_rotada2, rect_rotado2)
+
+                
             self.mostrar_texto = True
         
     def pintar_texto(self):
-        mensaje = "Pulsa espacio para continuar"
-        texto = self.font.render(mensaje, True, (255, 255, 255))
-        pos_x = ANCHO/2 - texto.get_width()/2
-        pos_y = ALTO* 3/4 
-        self.pantalla.blit(texto, ( pos_x, pos_y))
+        if self.mostrar_texto:
+            mensaje = "Pulsa espacio para continuar"
+            texto = self.font.render(mensaje, True, (255, 255, 255))
+            pos_x = ANCHO/2 - texto.get_width()/2
+            pos_y = ALTO* 3/4 
+            self.pantalla.blit(texto, ( pos_x, pos_y))
 
 class Nivel_Dificil(Nivel_Facil):
     def __init__(self, pantalla, vidas=3, puntuacion = 0): 
