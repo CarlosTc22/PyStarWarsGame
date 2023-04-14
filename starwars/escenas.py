@@ -2,6 +2,7 @@ import os
 import pygame as pg
 from . import ALTO, ANCHO, METEORITOS_NIVEL_DIFICIL, METEORITOS_NIVEL_FACIL
 from .assets import Ball_Training, Laser, Meteorito, Planeta, X_Wing 
+from .records import recuperar_records, agregar_record, actualizar_record
 
 class Escena:
     def __init__(self, pantalla):
@@ -136,7 +137,7 @@ class Nivel_Facil(Escena):
 
         self.x_wing = X_Wing()
         self.meteoritos = []
-        self.duracion_nivel = 2
+        self.duracion_nivel = 20
         self.vidas = vidas
         self.pausa_meteoritos = False
         self.timer_pausa = pg.USEREVENT + 1
@@ -179,6 +180,7 @@ class Nivel_Facil(Escena):
                 
                 elif self.vidas <= 0:
                     print("game_over")
+                    agregar_record("YOD", self.puntuacion)
                     return ("game_over")
                 elif not self.pausa_meteoritos and not self.pausa_final:
                     if self.contador_meteoritos < self.limite_meteoritos:
@@ -307,9 +309,9 @@ class Nivel_Dificil(Nivel_Facil):
     def bucle_principal(self):
         resultado = super().bucle_principal()
         
-        if resultado == "continue":
-            print ("fallo")
-            return "portada"
+        if resultado == "continue" or resultado == "game_over":
+            print ("records")
+            return "game_over"
         
         return resultado
 
@@ -317,14 +319,7 @@ class Records(Nivel_Facil):
     def __init__(self, pantalla, vidas=3, puntuacion=0):
         super().__init__(pantalla, vidas, puntuacion)
 
-        # Simular información de los récords
-        self.records = [
-            {"nombre": "Jugador 1", "record": 1000},
-            {"nombre": "Jugador 2", "record": 800},
-            {"nombre": "Jugador 3", "record": 600},
-            {"nombre": "Jugador 4", "record": 400},
-            {"nombre": "Jugador 5", "record": 200},
-        ]
+        self.records = recuperar_records()
 
     def pintar_records(self):
         ruta_font = os.path.join("resources", "fonts", "Starjedi.ttf")
