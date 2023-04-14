@@ -313,28 +313,54 @@ class Nivel_Dificil(Nivel_Facil):
         
         return resultado
 
-class Records(Escena):
-    def __init__(self, pantalla):
-        super().__init__(pantalla)
-        ruta = os.path.join("resources", "images", "background.jpg")
-        self.fondo = pg.image.load(ruta)
+class Records(Nivel_Facil):
+    def __init__(self, pantalla, vidas=3, puntuacion=0):
+        super().__init__(pantalla, vidas, puntuacion)
 
+        # Simular información de los récords
+        self.records = [
+            {"nombre": "Jugador 1", "record": 1000},
+            {"nombre": "Jugador 2", "record": 800},
+            {"nombre": "Jugador 3", "record": 600},
+            {"nombre": "Jugador 4", "record": 400},
+            {"nombre": "Jugador 5", "record": 200},
+        ]
+
+    def pintar_records(self):
         ruta_font = os.path.join("resources", "fonts", "Starjedi.ttf")
         self.font = pg.font.Font(ruta_font, 60)
+        espacio_vertical = 80
+        margen_izquierdo = 150
+        margen_superior = 100
+
+        # Pintar encabezados de las columnas
+        encabezado_nombre = self.font.render("Nombre", True, (255, 255, 255))
+        encabezado_record = self.font.render("Record", True, (255, 255, 255))
+        self.pantalla.blit(encabezado_nombre, (margen_izquierdo, margen_superior))
+        self.pantalla.blit(encabezado_record, (ANCHO // 2 + margen_izquierdo, margen_superior))
+
+        # Pintar la lista de récords
+        for index, record in enumerate(self.records):
+            texto_nombre = self.font.render(record["nombre"], True, (255, 255, 255))
+            texto_record = self.font.render(str(record["record"]), True, (255, 255, 255))
+
+            y = margen_superior + espacio_vertical * (index + 1)
+            self.pantalla.blit(texto_nombre, (margen_izquierdo, y))
+            self.pantalla.blit(texto_record, (ANCHO // 2 + margen_izquierdo, y))
 
     def bucle_principal(self):
-        super().bucle_principal()
         salir = False
         while not salir:
+            self.pintar_fondo()
+            self.pintar_records()
+            pg.display.flip()
+
             for event in pg.event.get():
                 if event.type == pg.QUIT:
-                    salir = True
-            self.pintar_fondo()
-            pg.display.flip()
-        return False
-    
-    def pintar_fondo(self):
-        self.pantalla.blit(self.fondo, (0, 0))
+                    return "salir"
+                elif event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
+                    return "portada"
+                
 
 class Historia(Escena):
     def __init__(self, pantalla):
