@@ -27,6 +27,9 @@ class Starwars:
 
     def jugar(self):
         "Bucle principal"
+        pg.mixer.music.load(os.path.join(
+            "resources", "sounds", "Duel_of_the_Fates.mp3"))
+        pg.mixer.music.play(10)
         vidas_restantes = 3 
         puntuacion_obtenida = 0
 

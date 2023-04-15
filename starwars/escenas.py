@@ -14,6 +14,7 @@ class Escena:
         ruta_font = os.path.join("resources", "fonts", "Starjedi.ttf")
         self.font = pg.font.Font(ruta_font, 30)
 
+
     def bucle_principal(self):
         pass
 
@@ -76,7 +77,6 @@ class Portada(Escena):
         pos_x2 = ANCHO/2 - texto.get_width()/2
         pos_y2 = ALTO * 0.70 
         self.pantalla.blit(texto2, ( pos_x2, pos_y2))
-
 
 class Tutorial(Escena):
 
