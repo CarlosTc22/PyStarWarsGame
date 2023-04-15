@@ -132,7 +132,7 @@ class Tutorial(Escena):
         self.pantalla.blit(texto2, ( pos_x2, pos_y2))
 
 class Nivel_Facil(Escena):
-    def __init__(self, pantalla, vidas=3, puntuacion=0):
+    def __init__(self, pantalla, vidas = 3, puntuacion = 0):
         super().__init__(pantalla)
         self.x_wing = X_Wing()
         self.meteoritos = []
@@ -155,7 +155,7 @@ class Nivel_Facil(Escena):
         self.angulo = 0
         self.rotacion = False
         self.fin_rotacion = False
-        
+
     def bucle_principal(self):
         self.start_time = pg.time.get_ticks()
         super().bucle_principal()
@@ -178,9 +178,9 @@ class Nivel_Facil(Escena):
                 
                 elif self.vidas <= 0:
                     print("game_over")
-                    iniciales = self.pedir_iniciales()
-                    if iniciales != "salir":
-                        agregar_record(iniciales, self.puntuacion)
+                    self.iniciales = self.pedir_iniciales()
+                    if self.iniciales != "salir":
+                        agregar_record(self.iniciales, self.puntuacion)
                     return ("game_over")
                 elif not self.pausa_meteoritos and not self.pausa_final:
                     if self.contador_meteoritos < self.limite_meteoritos:
@@ -333,8 +333,8 @@ class Nivel_Dificil(Nivel_Facil):
         resultado = super().bucle_principal()
         
         if resultado == "continue":
-            print ("records")
-            return "game_over"
+            agregar_record(self.pedir_iniciales(), self.puntuacion)
+            return ("game_over")
         
         return resultado
 
