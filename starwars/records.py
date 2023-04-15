@@ -1,5 +1,7 @@
 import sqlite3
 
+# Investigado de internet, funciona
+
 def inicializar_base_datos():
     conn = sqlite3.connect("records.db")
     cursor = conn.cursor()

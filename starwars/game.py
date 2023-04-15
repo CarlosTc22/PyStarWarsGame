@@ -28,12 +28,12 @@ class Starwars:
     def jugar(self):
         "Bucle principal"
         pg.mixer.music.load(os.path.join(
-            "resources", "sounds", "Duel_of_the_Fates.mp3"))
+            "resources", "sounds", "Duel_of_the_Fates.mp3")) # La música
         pg.mixer.music.play(10)
         vidas_restantes = 3 
         puntuacion_obtenida = 0
 
-        while self.escena_actual is not None:
+        while self.escena_actual is not None: # Gestión de los cambios de escena
             if self.escena_actual == "portada":
                 self.escenas["nivel_facil"] = Nivel_Facil(self.pantalla)
             resultado = self.escenas[self.escena_actual].bucle_principal()

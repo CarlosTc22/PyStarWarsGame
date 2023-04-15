@@ -142,11 +142,11 @@ class Tutorial(Escena):
         self.pantalla.blit(texto2, ( pos_x2, pos_y2))
 
 class Nivel_Facil(Escena):
+    # Se utilizan los eventos de pg para gestionar los eventos del juego
     def __init__(self, pantalla, vidas = 3, puntuacion = 0):
         super().__init__(pantalla)
         self.x_wing = X_Wing()
         self.meteoritos = []
-        self.duracion_nivel = 2
         self.vidas = vidas
         self.pausa_meteoritos = False
         self.timer_pausa = pg.USEREVENT + 1
@@ -156,7 +156,7 @@ class Nivel_Facil(Escena):
         self.espera_timer = pg.USEREVENT + 3
         self.pausa_final = False
         self.contador_meteoritos = 0
-        self.limite_meteoritos = METEORITOS_NIVEL_FACIL
+        self.limite_meteoritos = METEORITOS_NIVEL_FACIL # Dificultad del nivel
         self.mover_nave_activado = False
         self.mostrar_texto = False
         self.planeta = Planeta()
@@ -170,13 +170,14 @@ class Nivel_Facil(Escena):
         salir = False
         espera_iniciada = False
         while not salir:
-
+         # Condicion para acabar el nivel:       
             if self.contador_meteoritos_puntuacion >= self.limite_meteoritos and not espera_iniciada:
                 self.mostrar_marcadores = False
                 self.pausa_final = True
                 pg.time.set_timer(self.espera_timer, 5000)
                 espera_iniciada = True
                 
+        # Bucle gestor de los eventos:
 
             for event in pg.event.get():
                 if event.type == pg.QUIT:
@@ -214,6 +215,8 @@ class Nivel_Facil(Escena):
             if self.mostrar_texto:
                 self.pintar_texto()
 
+        # Condición de colision con un meteorito:
+
             if self.x_wing.hay_colision:
                 y = self.x_wing.rect.y
                 explosion = Explosion(self.x_wing.rect.x, y)
@@ -223,6 +226,8 @@ class Nivel_Facil(Escena):
                 self.pausa_meteoritos = True
                 self.x_wing.rect.y = -5 * self.x_wing.rect.y
                 pg.time.set_timer(self.timer_pausa, 5000)
+
+        # Gestión de la lista de meteoritos, puntuación y fin del nivel:
 
             for meteorito in self.meteoritos:
                 meteorito.update()
@@ -235,11 +240,15 @@ class Nivel_Facil(Escena):
                     meteorito.cruzado_eje_x = True
             self.pantalla.blit(self.planeta.image, self.planeta.rect)
 
+        # Condiciones para pintar elementos en pantalla o no pintarlos:
+
             if not self.mostrar_texto:
                 self.pantalla.blit(self.x_wing.image, self.x_wing.rect)
             if self.mostrar_marcadores:
                 self.mostrar_vidas()
                 self.mostrar_puntuacion()
+
+        # Pintar sprite de explosión:
 
             self.explosion_group.update()
             self.explosion_group.draw(self.pantalla)
@@ -247,18 +256,18 @@ class Nivel_Facil(Escena):
 
         return False
 
-    def mostrar_vidas(self):
+    def mostrar_vidas(self): # Marcador de vidas
         texto = self.font.render(f"vidas: {self.vidas}", True, (255, 255, 255))
         self.pantalla.blit(texto, (50, 50))
 
-    def pintar_fondo(self):
+    def pintar_fondo(self): 
         self.pantalla.blit(self.fondo, (0, 0))
     
-    def mostrar_puntuacion(self):
+    def mostrar_puntuacion(self): # Marcador de puntuación
         texto = self.font.render(f"puntuación: {self.puntuacion}", True, (255, 255, 255))
         self.pantalla.blit(texto, (50, 100))
 
-    def mover_nave(self):
+    def mover_nave(self): # Aterrizaje de la nave
         i = 1
         destino_x = ANCHO - 600
         destino_y = ALTO / 2
@@ -294,7 +303,7 @@ class Nivel_Facil(Escena):
                 
             self.mostrar_texto = True
         
-    def pintar_texto(self):
+    def pintar_texto(self): # Texto cuando la nave termina de aterrizar
         if self.mostrar_texto:
             mensaje = "Pulsa espacio para continuar"
             texto = self.font.render(mensaje, True, (255, 255, 255))
@@ -302,7 +311,7 @@ class Nivel_Facil(Escena):
             pos_y = ALTO* 3/4 
             self.pantalla.blit(texto, ( pos_x, pos_y))
 
-    def pedir_iniciales(self):
+    def pedir_iniciales(self): # Pide las iniciales para guardar un record
         iniciales = ""
         salir = False
 
@@ -333,11 +342,11 @@ class Nivel_Facil(Escena):
             
             pg.display.flip()
 
-class Nivel_Dificil(Nivel_Facil):
+class Nivel_Dificil(Nivel_Facil): # hereda casi todo de nivel facil, hay una modificación para aumentar la dificultad
     def __init__(self, pantalla, vidas=3, puntuacion = 0): 
         super().__init__(pantalla, vidas, puntuacion)
         self.espera_timer = pg.USEREVENT + 4
-        self.limite_meteoritos = METEORITOS_NIVEL_DIFICIL
+        self.limite_meteoritos = METEORITOS_NIVEL_DIFICIL # Dificultad del nivel
         self.contador_meteoritos = 0
 
 
@@ -355,7 +364,7 @@ class Records(Nivel_Facil):
         super().__init__(pantalla, vidas, puntuacion)
         ruta = os.path.join("resources", "images", "background3.png")
         self.fondo = pg.image.load(ruta)
-        self.records = recuperar_records()
+        self.records = recuperar_records() # Recupera los records de la base de datos
 
     def pintar_records(self):
         ruta_font = os.path.join("resources", "fonts", "Starjedi.ttf")
@@ -403,7 +412,6 @@ class Records(Nivel_Facil):
                 
 
 class Historia(Escena):
-    # Escena del tutorial, sin daño.
 
     def __init__(self, pantalla):
         super().__init__(pantalla)
