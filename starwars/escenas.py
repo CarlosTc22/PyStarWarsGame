@@ -214,7 +214,9 @@ class Nivel_Facil(Escena):
                 meteorito.update()
                 self.pantalla.blit(meteorito.image, meteorito.rect)
                 if meteorito.rect.x <= 0 and not meteorito.cruzado_eje_x:
-                    self.puntuacion += 10
+                    if self.x_wing.rect.y > 0:
+                        meteorito.cruzado_eje_x = True
+                        self.puntuacion += 10
                     meteorito.cruzado_eje_x = True
             self.pantalla.blit(self.planeta.image, self.planeta.rect)
 
