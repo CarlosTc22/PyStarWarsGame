@@ -140,9 +140,7 @@ class Nivel_Facil(Escena):
         self.vidas = vidas
         self.pausa_meteoritos = False
         self.timer_pausa = pg.USEREVENT + 1
-        self.timer_nivel = pg.USEREVENT + 2
         self.puntuacion = puntuacion
-        self.tiempotranscurrido_timer = 0
         self.cruzado_eje_x = False
         self.mostrar_marcadores = True
         self.espera_timer = pg.USEREVENT + 3
@@ -157,15 +155,12 @@ class Nivel_Facil(Escena):
         self.fin_rotacion = False
 
     def bucle_principal(self):
-        self.start_time = pg.time.get_ticks()
         super().bucle_principal()
         salir = False
         espera_iniciada = False
         while not salir:
-            self.tiempotranscurrido_timer = pg.time.get_ticks() - self.start_time
-            tiempo_restante = self.duracion_nivel - (self.tiempotranscurrido_timer // 1000)
 
-            if tiempo_restante <= 0 and not espera_iniciada:
+            if self.contador_meteoritos >= self.limite_meteoritos and not espera_iniciada:
                 self.mostrar_marcadores = False
                 self.pausa_final = True
                 pg.time.set_timer(self.espera_timer, 5000)
@@ -197,8 +192,6 @@ class Nivel_Facil(Escena):
                     return "continue"
 
                     
-
-            self.tiempotranscurrido_timer = pg.time.get_ticks() - self.start_time
             self.pintar_fondo()
             self.x_wing.update()
             self.x_wing.detectar_colision(self)
@@ -230,7 +223,6 @@ class Nivel_Facil(Escena):
             if self.mostrar_marcadores:
                 self.mostrar_vidas()
                 self.mostrar_puntuacion()
-                self.pintar_temporizador()
             pg.display.flip()
 
         return False
@@ -241,11 +233,6 @@ class Nivel_Facil(Escena):
 
     def pintar_fondo(self):
         self.pantalla.blit(self.fondo, (0, 0))
-
-    def pintar_temporizador(self):
-        tiempo_restante = self.duracion_nivel - (self.tiempotranscurrido_timer // 1000)  
-        texto = self.font.render(f"{tiempo_restante}", True, (255, 255, 255))
-        self.pantalla.blit(texto, (ANCHO - texto.get_width() - 50, 50))
     
     def mostrar_puntuacion(self):
         texto = self.font.render(f"puntuación: {self.puntuacion}", True, (255, 255, 255))
@@ -323,7 +310,6 @@ class Nivel_Facil(Escena):
 class Nivel_Dificil(Nivel_Facil):
     def __init__(self, pantalla, vidas=3, puntuacion = 0): 
         super().__init__(pantalla, vidas, puntuacion)
-        self.duracion_nivel = 4
         self.espera_timer = pg.USEREVENT + 4
         self.limite_meteoritos = METEORITOS_NIVEL_DIFICIL
         self.contador_meteoritos = 0
