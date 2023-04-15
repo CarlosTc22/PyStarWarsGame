@@ -164,14 +164,14 @@ class Nivel_Facil(Escena):
         self.rotacion = False
         self.fin_rotacion = False
         self.explosion_group = pg.sprite.Group()
+        self.contador_meteoritos_puntuacion = 0
 
     def bucle_principal(self):
-        super().bucle_principal()
         salir = False
         espera_iniciada = False
         while not salir:
 
-            if self.contador_meteoritos >= self.limite_meteoritos and not espera_iniciada:
+            if self.contador_meteoritos_puntuacion >= self.limite_meteoritos and not espera_iniciada:
                 self.mostrar_marcadores = False
                 self.pausa_final = True
                 pg.time.set_timer(self.espera_timer, 5000)
@@ -230,6 +230,7 @@ class Nivel_Facil(Escena):
                 if meteorito.rect.x <= 0 and not meteorito.cruzado_eje_x:
                     if self.x_wing.rect.y > 0:
                         meteorito.cruzado_eje_x = True
+                        self.contador_meteoritos_puntuacion += 1
                         self.puntuacion += 10
                     meteorito.cruzado_eje_x = True
             self.pantalla.blit(self.planeta.image, self.planeta.rect)
