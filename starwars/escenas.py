@@ -43,7 +43,7 @@ class Portada(Escena):
                 if event.type == pg.KEYDOWN and event.key == pg.K_h:
                     return "historia"
                 if event.type == pg.KEYDOWN and event.key == pg.K_r:
-                    return "records"
+                    return "game_over"
             self.pintar_portada()
             self.pintar_texto()
             self.pintar_textotutorial()
@@ -56,17 +56,26 @@ class Portada(Escena):
 
     def pintar_texto(self):
         mensaje = "Pulsa espacio para comenzar la partida"
+        mensaje2 = "Pulsa H para conocer la historia"
         texto = self.font.render(mensaje, True, (255, 255, 255))
+        texto2 = self.font.render(mensaje2, True, (255, 255, 255))
         pos_x = ANCHO/2 - texto.get_width()/2
-        pos_y = ALTO/4 
+        pos_y = ALTO * 0.20 
         self.pantalla.blit(texto, ( pos_x, pos_y))
-   
+        pos_x2 = ANCHO/2 - texto.get_width()/2
+        pos_y2 = ALTO * .30
+        self.pantalla.blit(texto2, ( pos_x2, pos_y2))
     def pintar_textotutorial(self):
         mensaje = "Si hacer el tutorial quieres, T debes pulsar"
         texto = self.font.render(mensaje, True, (255, 255, 255))
         pos_x = ANCHO/2 - texto.get_width()/2
-        pos_y = ALTO* 3/4 
+        pos_y = ALTO* 0.60 
         self.pantalla.blit(texto, ( pos_x, pos_y))
+        mensaje2 = "Con R a los records entrarás"
+        texto2 = self.font.render(mensaje2, True, (255, 255, 255))
+        pos_x2 = ANCHO/2 - texto.get_width()/2
+        pos_y2 = ALTO * 0.70 
+        self.pantalla.blit(texto2, ( pos_x2, pos_y2))
 
 
 class Tutorial(Escena):
@@ -86,7 +95,7 @@ class Tutorial(Escena):
         # Se crea una lista para almacenar los disparos y se define un temporizador
 
         self.lasers = []  
-        self.laser_timer = pg.USEREVENT + 1  
+        self.laser_timer = pg.USEREVENT + 10  
         pg.time.set_timer(self.laser_timer, 1000)  
 
     def bucle_principal(self):
@@ -96,7 +105,7 @@ class Tutorial(Escena):
             for event in pg.event.get():
                 if event.type == pg.QUIT:
                     return "salir"
-                if event.type == pg.KEYDOWN and event.key == pg.K_BACKSPACE:
+                if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
                     return "portada"
         # Si se produce el evento de temporizador, se añade un láser a la lista
                 elif event.type == self.laser_timer:  
@@ -126,7 +135,7 @@ class Tutorial(Escena):
         pos_y = ALTO* 3/4 
         self.pantalla.blit(texto, ( pos_x, pos_y))
 
-        mensaje2 = "Aquí no hacen daño"
+        mensaje2 = "Aquí no hacen daño, pulsa espacio para continuar"
         texto2 = self.font.render(mensaje2, True, (255, 255, 255))
         pos_x2 = ANCHO/2 - texto2.get_width()/2
         pos_y2 = ALTO* .80 
@@ -305,7 +314,7 @@ class Nivel_Facil(Escena):
                         iniciales += event.unicode.upper()
                     elif event.key == pg.K_BACKSPACE and len(iniciales) > 0:
                         iniciales = iniciales[:-1]
-                    elif event.key == pg.K_RETURN and len(iniciales) == 3:
+                    elif event.key == pg.K_SPACE and len(iniciales) == 3:
                         return iniciales
 
             self.pintar_fondo()
@@ -315,6 +324,12 @@ class Nivel_Facil(Escena):
             pos_x = ANCHO / 2 - texto.get_width() / 2
             pos_y = ALTO / 2 - texto.get_height() / 2
             self.pantalla.blit(texto, (pos_x, pos_y))
+            mensaje2 = "Pulsa espacio para continuar"
+            texto = self.font.render(mensaje2, True, (255, 255, 255))
+            pos_x2 = ANCHO / 2 - texto.get_width() / 2
+            pos_y2 = ALTO * 0.60 - texto.get_height() / 2
+            self.pantalla.blit(texto, (pos_x2, pos_y2))
+            
             pg.display.flip()
 
 class Nivel_Dificil(Nivel_Facil):
@@ -345,6 +360,12 @@ class Records(Nivel_Facil):
         espacio_vertical = 80
         margen_izquierdo = 150
         margen_superior = 100
+
+        mensaje = "Pulsa espacio para continuar"
+        texto = self.font.render(mensaje, True, (255, 255, 255))
+        pos_x = ANCHO/2 - texto.get_width()/2
+        pos_y = ALTO* 0.60 
+        self.pantalla.blit(texto, ( pos_x, pos_y))
 
         # Pintar encabezados de las columnas
         encabezado_nombre = self.font.render("Nombre", True, (255, 255, 255))
