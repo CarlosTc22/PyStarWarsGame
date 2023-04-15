@@ -20,22 +20,21 @@ inicializar_base_datos()
 def agregar_record(nombre, record):
     conn = sqlite3.connect("records.db")
     cursor = conn.cursor()
-    
+
     cursor.execute("INSERT INTO records (nombre, record) VALUES (?, ?)", (nombre, record))
-    
+
+    # Ordenar la lista de récords de mayor a menor puntuación
+    cursor.execute("SELECT * FROM records ORDER BY record DESC")
+    records_ordenados = cursor.fetchall()
+
+    # Mantener solo las 5 mejores puntuaciones
+    if len(records_ordenados) > 5:
+        # Eliminar el récord con la puntuación más baja
+        id_peor_record = records_ordenados[-1][0]
+        cursor.execute("DELETE FROM records WHERE id=?", (id_peor_record,))
+
     conn.commit()
     conn.close()
-
-
-def actualizar_record(id, record):
-    conn = sqlite3.connect("records.db")
-    cursor = conn.cursor()
-    
-    cursor.execute("UPDATE records SET record = ? WHERE id = ?", (record, id))
-    
-    conn.commit()
-    conn.close()
-
 
 def recuperar_records():
     conn = sqlite3.connect("records.db")
