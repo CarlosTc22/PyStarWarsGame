@@ -218,6 +218,7 @@ class Nivel_Facil(Escena):
         # Condición de colision con un meteorito:
 
             if self.x_wing.hay_colision:
+                self.contador_meteoritos_puntuacion += 1
                 y = self.x_wing.rect.y
                 explosion = Explosion(self.x_wing.rect.x, y)
                 self.explosion_group.add(explosion)
@@ -233,11 +234,11 @@ class Nivel_Facil(Escena):
                 meteorito.update()
                 self.pantalla.blit(meteorito.image, meteorito.rect)
                 if meteorito.rect.x <= 0 and not meteorito.cruzado_eje_x:
-                    if self.x_wing.rect.y > 0:
-                        meteorito.cruzado_eje_x = True
-                        self.contador_meteoritos_puntuacion += 1
-                        self.puntuacion += 10
                     meteorito.cruzado_eje_x = True
+                    self.contador_meteoritos_puntuacion += 1
+                    if self.x_wing.rect.y > 0:
+                        self.puntuacion += 10
+                    print(self.contador_meteoritos_puntuacion, self.contador_meteoritos) # Comprobación en consola
             self.pantalla.blit(self.planeta.image, self.planeta.rect)
 
         # Condiciones para pintar elementos en pantalla o no pintarlos:
