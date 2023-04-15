@@ -400,5 +400,55 @@ class Records(Nivel_Facil):
                 
 
 class Historia(Escena):
+    # Escena del tutorial, sin daño.
+
     def __init__(self, pantalla):
         super().__init__(pantalla)
+        ruta = os.path.join("resources", "images", "background.jpg")
+        self.fondo = pg.image.load(ruta)
+
+        ruta_font = os.path.join("resources", "fonts", "Starjedi.ttf")
+        self.font = pg.font.Font(ruta_font, 30)
+        self.font_grande = pg.font.Font(ruta_font, 80)
+
+
+    def bucle_principal(self):
+        super().bucle_principal()
+        salir = False
+        while not salir:
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    return "salir"
+                if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
+                    return "portada"
+            self.pintar_fondo()
+            self.pintar_historia()
+            pg.display.flip()
+        return False
+
+    def pintar_fondo(self):
+        self.pantalla.blit(self.fondo, (0, 0))
+
+    def pintar_historia(self):
+        titulo = "En una galaxia muy lejana"
+        texto = self.font_grande.render(titulo, True, (255,255,255))
+        ancho_texto = texto.get_width()
+        pos_x = (ANCHO - ancho_texto)//2
+        pos_y = ALTO/8
+        self.pantalla.blit(texto, (pos_x, pos_y))
+        posiciones = [ALTO/4, ALTO/4 + 50, ALTO/4 + 100, ALTO/4 + 150, ALTO/4 + 200, ALTO/4 + 250, ALTO/4 + 300]
+        mensajes = ["la Princesa Leia lidera una rebelión contra el Imperio Galáctico",
+                    "y Luke Skywalker se une a la Alianza Rebelde como piloto de caza.",
+                    "Darth Vader persigue implacablemente a los rebeldes.",
+                    "Ayuda a Luke a cruzar a través de los meteoritos",
+                    "para participar en un ataque contra la Estrella de la muerte",
+                    "esta historia es mejor que cualquiera de disney",
+                    "pulsa espacio para volver"]
+        conta_posiciones = 0
+
+        for mensaje in mensajes:
+            texto_render = self.font.render(
+                (mensaje), True, (255,255,255))
+            self.pantalla.blit(
+                texto_render, (pos_x, posiciones[conta_posiciones]))
+            conta_posiciones += 1
