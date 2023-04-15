@@ -1,6 +1,7 @@
 import os
 import random
 import pygame as pg
+from pygame.locals import *
 from . import ALTO, ANCHO, MARGEN_NAVE , VELOCIDAD
 
 class X_Wing():
@@ -101,3 +102,30 @@ class Planeta():
         self.rect.x -= self.velocidad
         if self.rect.x <= ANCHO - 480:
             self.rect.x = ANCHO - 480
+
+class Explosion(pg.sprite.Sprite):
+	def __init__(self, x, y):
+		pg.sprite.Sprite.__init__(self)
+		self.explosiones = []
+		for i in range(1, 6):
+			img = pg.image.load(os.path.join("resources", "images", f"exp{i}.png"))
+			img = pg.transform.scale(img, (100, 100))
+			self.explosiones.append(img)
+		self.index = 0
+		self.image = self.explosiones[self.index]
+		self.rect = self.image.get_rect()
+		self.rect.center = [x, y]
+		self.contador = 0
+
+	def update(self):
+		velocidad = 50
+		self.contador += 1
+
+		if self.contador >= velocidad and self.index < len(self.explosiones) - 1:
+			self.contador = 0
+			self.index += 1
+			self.image = self.explosiones[self.index]
+
+		if self.index >= len(self.explosiones) - 1 and self.contador >= velocidad:
+			self.kill()
+

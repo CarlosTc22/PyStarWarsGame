@@ -1,7 +1,8 @@
 import os
 import pygame as pg
+from pygame.locals import *
 from . import ALTO, ANCHO, METEORITOS_NIVEL_DIFICIL, METEORITOS_NIVEL_FACIL
-from .assets import Ball_Training, Laser, Meteorito, Planeta, X_Wing 
+from .assets import Ball_Training, Explosion, Laser, Meteorito, Planeta, X_Wing 
 from .records import recuperar_records, agregar_record
 
 class Escena:
@@ -153,6 +154,7 @@ class Nivel_Facil(Escena):
         self.angulo = 0
         self.rotacion = False
         self.fin_rotacion = False
+        self.explosion_group = pg.sprite.Group()
 
     def bucle_principal(self):
         super().bucle_principal()
@@ -204,10 +206,13 @@ class Nivel_Facil(Escena):
                 self.pintar_texto()
 
             if self.x_wing.hay_colision:
+                y = self.x_wing.rect.y
+                explosion = Explosion(self.x_wing.rect.x, y)
+                self.explosion_group.add(explosion)
                 self.vidas -= 1
                 self.x_wing.hay_colision = False
                 self.pausa_meteoritos = True
-                self.x_wing.rect.y = -5 * ALTO
+                self.x_wing.rect.y = -5 * self.x_wing.rect.y
                 pg.time.set_timer(self.timer_pausa, 5000)
 
             for meteorito in self.meteoritos:
@@ -225,6 +230,9 @@ class Nivel_Facil(Escena):
             if self.mostrar_marcadores:
                 self.mostrar_vidas()
                 self.mostrar_puntuacion()
+
+            self.explosion_group.update()
+            self.explosion_group.draw(self.pantalla)
             pg.display.flip()
 
         return False
