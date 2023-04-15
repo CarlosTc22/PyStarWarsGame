@@ -36,6 +36,7 @@ class Starwars:
         while self.escena_actual is not None: # Gestión de los cambios de escena
             if self.escena_actual == "portada":
                 self.escenas["nivel_facil"] = Nivel_Facil(self.pantalla)
+                self.escenas["nivel_dificil"] = Nivel_Dificil(self.pantalla)
             resultado = self.escenas[self.escena_actual].bucle_principal()
             if resultado == "game_over":
                 puntuacion_obtenida = self.escenas["nivel_facil"].puntuacion 
