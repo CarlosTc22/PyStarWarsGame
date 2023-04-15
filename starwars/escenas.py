@@ -84,7 +84,7 @@ class Tutorial(Escena):
 
     def __init__(self, pantalla):
         super().__init__(pantalla)
-        ruta = os.path.join("resources", "images", "background.jpg")
+        ruta = os.path.join("resources", "images", "background2.png")
         self.fondo = pg.image.load(ruta)
 
         ruta_font = os.path.join("resources", "fonts", "Starjedi.ttf")
@@ -353,6 +353,8 @@ class Nivel_Dificil(Nivel_Facil):
 class Records(Nivel_Facil):
     def __init__(self, pantalla, vidas=3, puntuacion=0):
         super().__init__(pantalla, vidas, puntuacion)
+        ruta = os.path.join("resources", "images", "background3.png")
+        self.fondo = pg.image.load(ruta)
         self.records = recuperar_records()
 
     def pintar_records(self):
@@ -405,7 +407,7 @@ class Historia(Escena):
 
     def __init__(self, pantalla):
         super().__init__(pantalla)
-        ruta = os.path.join("resources", "images", "background.jpg")
+        ruta = os.path.join("resources", "images", "background4.png")
         self.fondo = pg.image.load(ruta)
 
         ruta_font = os.path.join("resources", "fonts", "Starjedi.ttf")
