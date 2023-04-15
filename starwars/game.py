@@ -31,11 +31,14 @@ class Starwars:
         puntuacion_obtenida = 0
 
         while self.escena_actual is not None:
+            if self.escena_actual == "portada":
+                self.escenas["nivel_facil"] = Nivel_Facil(self.pantalla)
             resultado = self.escenas[self.escena_actual].bucle_principal()
             if resultado == "game_over":
                 puntuacion_obtenida = self.escenas["nivel_facil"].puntuacion 
                 self.escenas["records"] = Records(self.pantalla, 10, puntuacion_obtenida) 
                 self.escena_actual = "records"
+
             elif resultado == "continue":
                 vidas_restantes = self.escenas["nivel_facil"].vidas 
                 puntuacion_obtenida = self.escenas["nivel_facil"].puntuacion 

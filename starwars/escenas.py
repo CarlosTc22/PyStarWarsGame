@@ -136,7 +136,7 @@ class Nivel_Facil(Escena):
         super().__init__(pantalla)
         self.x_wing = X_Wing()
         self.meteoritos = []
-        self.duracion_nivel = 20
+        self.duracion_nivel = 2
         self.vidas = vidas
         self.pausa_meteoritos = False
         self.timer_pausa = pg.USEREVENT + 1
@@ -268,7 +268,7 @@ class Nivel_Facil(Escena):
             velocidad_x = 0
             velocidad_y = 0
 
-        self.x_wing.rect.x += velocidad_x
+        self.x_wing.rect.x += velocidad_x *3
         self.x_wing.rect.y += velocidad_y
 
         if abs(self.x_wing.rect.x - destino_x) < 1 and abs(self.x_wing.rect.y - destino_y) < 1:
@@ -323,7 +323,7 @@ class Nivel_Facil(Escena):
 class Nivel_Dificil(Nivel_Facil):
     def __init__(self, pantalla, vidas=3, puntuacion = 0): 
         super().__init__(pantalla, vidas, puntuacion)
-        self.duracion_nivel = 25
+        self.duracion_nivel = 4
         self.espera_timer = pg.USEREVENT + 4
         self.limite_meteoritos = METEORITOS_NIVEL_DIFICIL
         self.contador_meteoritos = 0
@@ -332,7 +332,7 @@ class Nivel_Dificil(Nivel_Facil):
     def bucle_principal(self):
         resultado = super().bucle_principal()
         
-        if resultado == "continue" or resultado == "game_over":
+        if resultado == "continue":
             print ("records")
             return "game_over"
         
